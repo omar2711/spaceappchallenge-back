@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaceapps-cochabamba/ruta-del-agua/manifest.schema.json",
+  "title": "SPHEREx target manifest",
+  "type": "object",
+  "required": ["target_id", "name", "kind", "ref_coord", "proper_motion_mas_yr", "fov_arcmin",
+               "pixel_scale_arcsec", "image_size_px", "grid_wcs", "epochs", "detectors", "stretch",
+               "source", "notes"],
+  "properties": {
+    "target_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "name": {"type": "string"},
+    "kind": {"enum": ["high_proper_motion_star", "brown_dwarf", "variable_star", "custom"]},
+    "ref_coord": {
+      "type": "object",
+      "required": ["ra_deg", "dec_deg", "epoch"],
+      "properties": {
+        "ra_deg": {"type": "number", "minimum": 0, "maximum": 360},
+        "dec_deg": {"type": "number", "minimum": -90, "maximum": 90},
+        "epoch": {"type": "string"},
+        "source": {"type": "string"}
+      }
+    },
+    "proper_motion_mas_yr": {
+      "type": "object",
+      "required": ["pmra", "pmdec"],
+      "properties": {"pmra": {"type": "number"}, "pmdec": {"type": "number"}}
+    },
+    "fov_arcmin": {"type": "number", "exclusiveMinimum": 0},
+    "pixel_scale_arcsec": {"type": "number", "exclusiveMinimum": 0},
+    "image_size_px": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 2, "maxItems": 2},
+    "grid_wcs": {
+      "type": "object",
+      "required": ["CTYPE1", "CTYPE2", "CRVAL1", "CRVAL2", "CRPIX1", "CRPIX2", "CDELT1", "CDELT2"]
+    },
+    "epochs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "date_start", "date_end", "date_mid"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^S[0-9]+$"},
+          "date_start": {"type": "string"},
+          "date_end": {"type": "string"},
+          "date_mid": {"type": "string"}
+        }
+      }
+    },
+    "detectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "wavelength_um", "frames"],
+        "properties": {
+          "id": {"type": "integer", "minimum": 1, "maximum": 6},
+          "wavelength_um": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+          "frames": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["epoch", "file", "fits", "n_images", "target_px", "flags_fraction"],
+              "properties": {
+                "epoch": {"type": "string", "pattern": "^S[0-9]+$"},
+                "file": {"type": "string", "pattern": "^S[0-9]+_D[1-6]\\.webp$"},
+                "fits": {"type": "string", "pattern": "^S[0-9]+_D[1-6]\\.fits$"},
+                "n_images": {"type": "integer", "minimum": 1},
+                "target_px": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+                "flags_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+                "saturated_exposures": {"type": "integer", "minimum": 0},
+                "wavelength_at_target_um": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+                "date_mid": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "stretch": {
+      "type": "object",
+      "required": ["method", "per_detector_limits"],
+      "properties": {
+        "method": {"const": "asinh"},
+        "per_detector_limits": {
+          "type": "object",
+          "patternProperties": {"^[1-6]$": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2}},
+          "additionalProperties": false
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["collections", "generated_at"],
+      "properties": {
+        "collections": {"type": "array", "items": {"type": "string"}},
+        "generated_at": {"type": "string"}
+      }
+    },
+    "notes": {"type": "string"}
+  }
+}

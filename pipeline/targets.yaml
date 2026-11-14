@@ -1,0 +1,80 @@
+# Targets for the SPHEREx pipeline.
+# Astrometry is stored here so runs do not depend on SIMBAD/Gaia being up.
+#   epoch: Julian year of ra/dec. pm in mas/yr (pmra includes cos(dec)). plx in mas. rv in km/s (0 if unknown).
+# Sources (2026-11-14): Gaia DR3 for Barnard; CDS Sesame (SIMBAD, J2000) for the rest, since SIMBAD TAP was down.
+
+barnard:
+  name: "Barnard's Star"
+  kind: high_proper_motion_star
+  fov_arcmin: 4.0
+  astrometry:
+    source: "Gaia DR3 4472832130942575872"
+    ra: 269.44850252543836
+    dec: 4.739420051112412
+    epoch: 2016.0
+    pmra: -801.5509783684709
+    pmdec: 10362.394206546573
+    plx: 546.975939730948
+    rv: -110.46822357177734
+
+eps_ind_b:
+  name: "Epsilon Indi B"
+  kind: brown_dwarf
+  fov_arcmin: 4.0   # eps Ind A (V=4.7) is 6.7' away; a ~10' field would include it
+  notes: "Ba/Bb binary (~0.7\" separation) is unresolved at 6.15\"/px."
+  astrometry:
+    source: "SIMBAD via Sesame: * eps Ind B"
+    ra: 331.04414658852124
+    dec: -56.78284419511611
+    epoch: 2000.0
+    pmra: 3981.977
+    pmdec: -2466.832
+    plx: 270.658
+    rv: 0.0
+
+wise0855:
+  name: "WISE 0855-0714"
+  kind: brown_dwarf
+  fov_arcmin: 4.0
+  notes: >-
+    Best detector: D6 (4.4-5.0 um). A fixed background source sits at the target position in D1-D4, where
+    WISE 0855 is invisible; in D6 the centroid follows the predicted proper motion (7.2" measured vs 8.0"
+    expected S1->S3). Challenge statement gives RA 08h55m10.831s Dec -07d14m42.53s (WISE epoch); the SIMBAD
+    J2000 position propagated to 2010 agrees.
+  astrometry:
+    source: "SIMBAD via Sesame: WISEA J085510.74-071442.5"
+    ra: 133.81890825
+    dec: -7.247048
+    epoch: 2000.0
+    pmra: -8123.7
+    pmdec: 673.2
+    plx: 439.0
+    rv: 0.0
+
+rw_aur:
+  name: "RW Aurigae"
+  kind: variable_star
+  fov_arcmin: 4.0
+  astrometry:
+    source: "SIMBAD via Sesame: V* RW Aur"
+    ra: 76.95652603458
+    dec: 30.40143817389
+    epoch: 2000.0
+    pmra: 7.23
+    pmdec: -20.33
+    plx: 15.42
+    rv: 0.0
+
+r_dra:
+  name: "R Draconis"
+  kind: variable_star
+  fov_arcmin: 4.0
+  astrometry:
+    source: "SIMBAD via Sesame: V* R Dra"
+    ra: 248.16761083295
+    dec: 66.75497941722
+    epoch: 2000.0
+    pmra: -20.643
+    pmdec: 6.149
+    plx: 1.2509
+    rv: 0.0
