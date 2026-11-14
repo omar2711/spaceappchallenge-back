@@ -35,6 +35,8 @@ PROCESSED_ROOT = Path("data/processed")
 PIXEL_SCALE_ARCSEC = 6.15
 FOV_ARCMIN = 4.0
 CLIP_SIGMA = 5.0
+# FITS header value describing the background removal done in load_exposure (keep both in sync).
+BKGSUB_DESC = "ZODI model, then sky plane fit (3-sigma clipped)"
 
 # FLAGS bits (names from MSKNnn in the FLAGS header). Validated on Barnard, see docs/pipeline_fase1.md.
 # Bright stars carry TRANSIENT/OVERFLOW/SUR_ERROR/BLOOM on their core, so those are NOT rejected;
@@ -229,7 +231,7 @@ def stack_target(target_id, fov_arcmin=None):
             ph["BADFRAC"] = (float(np.mean(exp["bad_fraction"])), "mean fraction of rejected px")
             ph["REJBITS"] = (",".join(map(str, REJECT_BITS)), "FLAGS bits masked")
             ph["COMBINE"] = (f"weighted mean 1/var, {CLIP_SIGMA}-sigma clip (median, MAD)", "")
-            ph["BKGSUB"] = ("ZODI + clipped median", "")
+            ph["BKGSUB"] = (BKGSUB_DESC, "per-exposure background removal")
             ph["FILLNOTE"] = ("FILLED = n exposures with saturated px interpolated", "")
             ph["CREATED"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
             hdul = fits.HDUList([
