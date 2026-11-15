@@ -1,0 +1,20 @@
+{
+  "id": "3i-atlas",
+  "name": "3I/ATLAS",
+  "designation": "C/2025 N1 (ATLAS)",
+  "object_type": "interstellar_comet",
+  "discovery": {
+    "survey": "ATLAS",
+    "year": 2025
+  },
+  "science": {
+    "why_it_matters": "A rare opportunity to compare volatile material formed outside the Solar System.",
+    "water_connection": "Cometary ices and outgassing connect small bodies with the distribution of water and other volatiles."
+  },
+  "ephemeris": {
+    "available": false,
+    "note": "The API does not fabricate a live position. Add an authoritative JPL/Horizons ephemeris before showing coordinates.",
+    "source_url": "https://ssd.jpl.nasa.gov/horizons/"
+  },
+  "source_url": "https://science.nasa.gov/solar-system/comets/"
+}

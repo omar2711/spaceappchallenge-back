@@ -1,0 +1,35 @@
+{
+  "catalog": "SPLICES",
+  "title": "Ice features and water-related targets",
+  "status": "curated_demo_subset",
+  "notes": "This version is a lightweight demo layer. Replace or extend entries with the official SPLICES release before scientific publication.",
+  "source_url": "https://science.nasa.gov/mission/spherex/",
+  "entries": [
+    {
+      "id": "lunar-south-pole-ice",
+      "name": "Lunar south-pole permanently shadowed regions",
+      "body": "Moon",
+      "latitude_deg": -89.9,
+      "longitude_deg": 0.0,
+      "material": "water_ice_candidate",
+      "evidence": "Cold-trap environment and orbital neutron/infrared observations."
+    },
+    {
+      "id": "jezero-water-alteration",
+      "name": "Jezero aqueous alteration zone",
+      "body": "Mars",
+      "latitude_deg": 18.4,
+      "longitude_deg": 77.6,
+      "material": "hydrated_minerals",
+      "evidence": "Delta and crater-lake deposits associated with ancient water."
+    },
+    {
+      "id": "3i-atlas-volatile-target",
+      "name": "3I/ATLAS volatile-composition target",
+      "body": "3I/ATLAS",
+      "material": "volatile_ice",
+      "evidence": "Interstellar comet target for comparing volatile signatures.",
+      "position": null
+    }
+  ]
+}

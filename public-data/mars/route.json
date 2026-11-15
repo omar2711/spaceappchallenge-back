@@ -1,0 +1,40 @@
+{
+  "route_id": "water-history-jezero",
+  "name": "Ruta del agua en Jezero",
+  "body": "Mars",
+  "notes": "Waypoints educativos para visualizar ambientes antiguos relacionados con agua. Coordinates are approximate demo values.",
+  "waypoints": [
+    {
+      "id": "jezero-crater",
+      "name": "Cráter Jezero",
+      "latitude_deg": 18.38,
+      "longitude_deg": 77.58,
+      "evidence": "Ancient crater lake basin with a delta deposit.",
+      "hazards": ["rough terrain", "dust", "limited trafficable corridors"]
+    },
+    {
+      "id": "western-delta-front",
+      "name": "Frente del delta occidental",
+      "latitude_deg": 18.42,
+      "longitude_deg": 77.63,
+      "evidence": "Layered delta front deposited by flowing water.",
+      "hazards": ["steep slopes", "loose sediment", "rocky outcrops"]
+    },
+    {
+      "id": "neretva-vallis",
+      "name": "Neretva Vallis",
+      "latitude_deg": 18.43,
+      "longitude_deg": 77.70,
+      "evidence": "Inlet valley that fed the Jezero basin.",
+      "hazards": ["sand traps", "boulder fields", "long communication route"]
+    },
+    {
+      "id": "delta-fan-front",
+      "name": "Abanico del delta",
+      "latitude_deg": 18.46,
+      "longitude_deg": 77.62,
+      "evidence": "Fan-shaped sedimentary terrain useful for reading past water flow.",
+      "hazards": ["uneven ground", "dust accumulation", "limited solar visibility"]
+    }
+  ]
+}

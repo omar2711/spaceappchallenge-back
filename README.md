@@ -56,6 +56,9 @@ Endpoints de datos:
 - `GET /api/v1/visibility/cochabamba/{target_id}`: calcula visibilidad para una fecha UTC.
 - `GET /api/v1/moon/sites`: lista sitios del polo sur y sitios Apollo.
 - `GET /api/v1/moon/sites/{site_id}/conditions`: calcula Sol/Tierra para un sitio lunar.
+- `GET /api/v1/mars/route`: devuelve la ruta educativa por Jezero.
+- `GET /api/v1/ice`: devuelve la capa versionada de hielo para la demo.
+- `GET /api/v1/comets/3i-atlas`: devuelve la ficha y fuentes del cometa.
 - `/data/...`: sirve los WebP y JSON publicados desde `public-data/`.
 
 Para permitir otro origen del frontend, define `API_CORS_ORIGINS` como una lista separada

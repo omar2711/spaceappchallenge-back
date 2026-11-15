@@ -160,3 +160,32 @@ def test_moon_site_conditions_reject_unknown_site() -> None:
     response = client.get("/api/v1/moon/sites/not-a-site/conditions")
 
     assert response.status_code == 404
+
+
+def test_mars_route_contains_water_waypoints() -> None:
+    response = client.get("/api/v1/mars/route")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["body"] == "Mars"
+    assert len(body["waypoints"]) >= 3
+    assert "hazards" in body["waypoints"][0]
+
+
+def test_ice_catalog_contains_source_and_entries() -> None:
+    response = client.get("/api/v1/ice")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["catalog"] == "SPLICES"
+    assert body["entries"]
+    assert body["source_url"].startswith("https://")
+
+
+def test_3i_atlas_declares_ephemeris_status() -> None:
+    response = client.get("/api/v1/comets/3i-atlas")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == "3i-atlas"
+    assert body["ephemeris"]["available"] is False

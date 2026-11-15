@@ -27,6 +27,9 @@ TARGETS_ROOT = PUBLIC_DATA_ROOT / "targets"
 TARGET_INDEX_PATH = TARGETS_ROOT / "index.json"
 CUSTOM_PRESETS_PATH = PUBLIC_DATA_ROOT / "custom" / "presets.json"
 MOON_SITES_PATH = PUBLIC_DATA_ROOT / "moon" / "sites.json"
+MARS_ROUTE_PATH = PUBLIC_DATA_ROOT / "mars" / "route.json"
+ICE_CATALOG_PATH = PUBLIC_DATA_ROOT / "ice" / "catalog.json"
+COMET_PATH = PUBLIC_DATA_ROOT / "comets" / "3i-atlas.json"
 JOB_ID_PATTERN = re.compile(r"^c[a-f0-9]{12}$")
 COCHABAMBA = EarthLocation.from_geodetic(
     lon=-66.157 * u.deg,
@@ -332,3 +335,21 @@ def get_moon_site_conditions(
         "observed_at": observed_at.isoformat(),
         "conditions": conditions,
     }
+
+
+@app.get("/api/v1/mars/route", tags=["mars"])
+def get_mars_route() -> dict[str, Any]:
+    """Devuelve la ruta educativa por zonas marcianas relacionadas con agua."""
+    return _read_json(MARS_ROUTE_PATH)
+
+
+@app.get("/api/v1/ice", tags=["water"])
+def get_ice_catalog() -> dict[str, Any]:
+    """Devuelve el subconjunto versionado del catálogo de hielo para la demo."""
+    return _read_json(ICE_CATALOG_PATH)
+
+
+@app.get("/api/v1/comets/3i-atlas", tags=["water"])
+def get_3i_atlas() -> dict[str, Any]:
+    """Devuelve la ficha del cometa interestelar 3I/ATLAS."""
+    return _read_json(COMET_PATH)
