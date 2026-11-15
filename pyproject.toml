@@ -33,6 +33,7 @@ spherex = [
     "jsonschema",
     "psutil",
     "photutils>=2.0",
+    "skyfield>=1.49",
 ]
 
 [tool.setuptools.packages.find]

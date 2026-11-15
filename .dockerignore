@@ -1,0 +1,15 @@
+.git
+.venv
+venv
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+dist/
+# data/ comes from the data bundle at build time (raw cutouts are GBs and stay local)
+data/
+public-data/custom/*
+!public-data/custom/presets.json
+!public-data/custom/cd2f34edd4880/
+!public-data/custom/c849cdb29dee1/
+!public-data/custom/c2d9e7410cce7/

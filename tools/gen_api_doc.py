@@ -91,7 +91,7 @@ def main():
         "(listas recortadas a 2 elementos). No editar a mano: actualizar el script y regenerar.",
         "",
         "- **Base URL local (modo demo):** `http://localhost:8000`",
-        "- **Base URL pública:** ver `docs/DEPLOY.md`",
+        "- **Base URL pública:** Render, ver `docs/DEPLOY.md` (plan gratuito: la primera petición tras 15 min sin uso tarda ~30–60 s; llamar antes a `/health`)",
         "- **Documentación interactiva:** `GET /docs` (Swagger) y `GET /openapi.json`.",
         "- **CORS:** abierto (`*`). Archivos estáticos bajo `/data/...` (la carpeta `public-data/` del repo).",
         "- **Convención de imágenes:** los WebP tienen origen arriba a la izquierda; `target_px` = `[x, y]` en esa "

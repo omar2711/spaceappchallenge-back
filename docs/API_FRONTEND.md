@@ -3,7 +3,7 @@
 > Generado con `python tools/gen_api_doc.py` llamando a la API real: los ejemplos son respuestas reales (listas recortadas a 2 elementos). No editar a mano: actualizar el script y regenerar.
 
 - **Base URL local (modo demo):** `http://localhost:8000`
-- **Base URL pública:** ver `docs/DEPLOY.md`
+- **Base URL pública:** Render, ver `docs/DEPLOY.md` (plan gratuito: la primera petición tras 15 min sin uso tarda ~30–60 s; llamar antes a `/health`)
 - **Documentación interactiva:** `GET /docs` (Swagger) y `GET /openapi.json`.
 - **CORS:** abierto (`*`). Archivos estáticos bajo `/data/...` (la carpeta `public-data/` del repo).
 - **Convención de imágenes:** los WebP tienen origen arriba a la izquierda; `target_px` = `[x, y]` en esa convención; el norte arriba y el este a la izquierda.
@@ -56,7 +56,7 @@ Response `202`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:25:43+00:00",
+  "updated_at": "2026-11-15T02:29:16+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -86,7 +86,7 @@ Response `200`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:25:43+00:00",
+  "updated_at": "2026-11-15T02:29:16+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -244,7 +244,7 @@ Response `200`:
     "... (+8 más)"
   ],
   "notes": "Forced aperture photometry (r = 12\") on cached exposures of the field at a fixed sky position (no proper motion). One point per exposure; saturated points ar...",
-  "elapsed_s": 0.14
+  "elapsed_s": 0.13
 }
 ```
 

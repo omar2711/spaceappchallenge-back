@@ -39,3 +39,6 @@ public-data/custom/*
 !public-data/custom/cd2f34edd4880/
 !public-data/custom/c849cdb29dee1/
 !public-data/custom/c2d9e7410cce7/
+
+# Data bundle built by tools/data_bundle.py (published as a GitHub release asset)
+dist/

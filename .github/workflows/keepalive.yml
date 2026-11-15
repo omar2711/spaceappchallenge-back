@@ -1,0 +1,14 @@
+# Keeps the free Render instance awake during the event by calling /health every 10 minutes.
+# Inactive until the repository variable API_URL is set (Settings > Secrets and variables > Actions > Variables),
+# e.g. https://ruta-del-agua-api.onrender.com . Delete the variable to stop it.
+name: keepalive
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    if: ${{ vars.API_URL != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS --max-time 90 "${{ vars.API_URL }}/health" || curl -fsS --max-time 90 "${{ vars.API_URL }}/health"

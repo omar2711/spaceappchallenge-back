@@ -1,0 +1,10 @@
+# Render Blueprint: one free Docker web service, redeployed on every push to main.
+services:
+  - type: web
+    name: ruta-del-agua-api
+    runtime: docker
+    plan: free
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
