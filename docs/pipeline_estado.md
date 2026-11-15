@@ -1,3 +1,30 @@
+# Estado del backend — resumen final (2026-11-14, 23:55)
+
+**El backend está cerrado.**
+- **Repositorio:** `omar2711/spaceappchallenge-back`. Todo está en `main`.
+- **API pública:** https://ruta-del-agua-api.onrender.com. Se redespliega sola desde `main`. Última verificación: 32 de 32 OK con `tools/verify_deploy.py`.
+- **Modo demo sin internet:** `demo.bat` (o `python -m app.demo`), que levanta la API en `http://localhost:8000`.
+- **Contrato para el frontend:** `docs/API_FRONTEND.md`, generado con `tools/gen_api_doc.py`.
+- **Despliegue:** `docs/DEPLOY.md`. El paquete de datos es el release `data-v1` (`data-bundle.tar.gz`, campos preparados + efemérides).
+
+| Bloque | Contenido |
+|---|---|
+| `pipeline/` (B1) | 5 objetivos y coordenadas arbitrarias (`POST /custom`, `GET /custom/{id}`), campos de demo (`public-data/custom/presets.json`) |
+| `analysis/` (B2) | Diferencias, curvas de luz, espectros por exposición, SPLICES, 3I/ATLAS, `GET /spectrum` |
+| `b3/` (B3) | Luna (`/moon/sites`, `/moon/visibility`, validado contra JPL Horizons), Gaia (`/gaia`), Cochabamba (`/visibility`), Marte (`/mars/marswalk`) |
+| `app/` | FastAPI: `main.py`, `spherex.py`, `b3.py`, `demo.py`. 18 pruebas en `tests/` |
+
+**Decisiones vigentes:**
+- `feature/b2-science` (Flavio) no se integra; queda en el remoto sin mezclar.
+- El frontend usa `analysis.json` para los espectros de los objetivos, y `/spectrum` solo para clics en otras posiciones.
+- `/spectrum` no se optimiza por ahora: tarda ~3.5–6 s en eps Ind B y Barnard en Render.
+
+**Mantenimiento:**
+- **Historial:** se reescribió el 14/11 para quitar líneas de atribución de herramientas. Los clones anteriores deben actualizarse con `git fetch` y `git reset --hard origin/main`.
+- **Hook de commits:** `git config core.hooksPath .githooks`.
+
+---
+
 # Estado del pipeline SPHEREx (B1) — 2026-11-14, 20:15
 
 ## Resumen
