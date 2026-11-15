@@ -57,7 +57,7 @@ Response `202`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T03:21:41+00:00",
+  "updated_at": "2026-11-15T03:34:01+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -87,7 +87,7 @@ Response `200`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T03:21:41+00:00",
+  "updated_at": "2026-11-15T03:34:01+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -122,7 +122,7 @@ Response `200`:
 
 ### Espectro de cualquier posición dentro de un campo: `GET /spectrum`
 
-Usa solo datos en caché; responde en ~0.1–1.5 s. `spectra[]` trae un espectro por pasada y uno `combined`; `points[]` = `wavelength_um`, `flux` (mJy), `err`, `n`, `lower_limit` (saturado → dibujar como cota). `position.target_px` es la posición dentro de las imágenes del campo (coordenadas WebP). Errores: 404 campo desconocido, 409 campo sin preparar, 422 posición fuera del campo.
+Usa solo datos en caché; responde en ~0.1–1.5 s. `spectra[]` trae un espectro por pasada y uno `combined`; `points[]` = `wavelength_um`, `flux` (mJy), `err`, `n`, `lower_limit` (saturado → dibujar como cota). `position.target_px` es la posición dentro de las imágenes del campo (coordenadas WebP). Errores: 404 campo desconocido, 409 campo sin preparar, 422 posición fuera del campo. **Decisión de uso (frontend):** para los espectros de los 5 objetivos usar `analysis.json` (`/data/targets/<id>/analysis.json`, ya calculado); usar `/spectrum` solo cuando el usuario hace clic en OTRA posición, mostrando un indicador de carga: en el servidor público tarda ~0.4–0.7 s en los presets y ~3.5–6 s en los campos grandes (eps Ind B, Barnard).
 
 Request:
 
@@ -245,7 +245,7 @@ Response `200`:
     "... (+8 más)"
   ],
   "notes": "Forced aperture photometry (r = 12\") on cached exposures of the field at a fixed sky position (no proper motion). One point per exposure; saturated points ar...",
-  "elapsed_s": 0.12
+  "elapsed_s": 0.14
 }
 ```
 

@@ -40,7 +40,10 @@ ENDPOINTS = [
      "Usa solo datos en caché; responde en ~0.1–1.5 s. `spectra[]` trae un espectro por pasada y uno `combined`; "
      "`points[]` = `wavelength_um`, `flux` (mJy), `err`, `n`, `lower_limit` (saturado → dibujar como cota). "
      "`position.target_px` es la posición dentro de las imágenes del campo (coordenadas WebP). Errores: 404 campo "
-     "desconocido, 409 campo sin preparar, 422 posición fuera del campo."),
+     "desconocido, 409 campo sin preparar, 422 posición fuera del campo. **Decisión de uso (frontend):** para los "
+     "espectros de los 5 objetivos usar `analysis.json` (`/data/targets/<id>/analysis.json`, ya calculado); usar "
+     "`/spectrum` solo cuando el usuario hace clic en OTRA posición, mostrando un indicador de carga: en el servidor "
+     "público tarda ~0.4–0.7 s en los presets y ~3.5–6 s en los campos grandes (eps Ind B, Barnard)."),
 ]
 
 ENDPOINTS += [
