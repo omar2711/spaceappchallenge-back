@@ -3016,8 +3016,674 @@
    }
   }
  ],
- "spectra": [],
- "reference_bands": [],
- "notes": "B2 analysis on top of B1's stacks (data/processed) and cached exposures (data/raw). Difference images: k*B - A on B1's common grid; colour range shared per detector (blue = fainter/old position, red = brighter/new position). Their target residual is NOT a variability measurement: each epoch samples different wavelengths inside a detector (see caveats). Light curves: forced aperture photometry (r = 2 px) on every exposure, corrected for the spectral shape inside each detector; fluxes in mJy; variability significance uses a 3% systematic floor. Flags: saturated = core lost, flux is a lower limit; contaminated = >20% of the aperture masked or flagged; blended = another source in the aperture.",
- "generated_at": "2026-11-14T23:44:00+00:00"
+ "spectra": [
+  {
+   "epoch": "S1",
+   "units": "mJy",
+   "binning": "native resolution (R~40 below 3.82 um, R~120 above)",
+   "n_exposures": 3,
+   "mjd_mean": 60800.746,
+   "points": [
+    {
+     "wavelength_um": 4.8599,
+     "flux": 0.502,
+     "err": 0.21822,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.9834,
+     "flux": 0.24056,
+     "err": 0.16744,
+     "n": 2,
+     "lower_limit": false
+    }
+   ]
+  },
+  {
+   "epoch": "S2",
+   "units": "mJy",
+   "binning": "native resolution (R~40 below 3.82 um, R~120 above)",
+   "n_exposures": 19,
+   "mjd_mean": 60996.057,
+   "points": [
+    {
+     "wavelength_um": 4.4178,
+     "flux": 0.48363,
+     "err": 0.16958,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.4493,
+     "flux": 0.81556,
+     "err": 0.17137,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.4812,
+     "flux": 0.8567,
+     "err": 0.1742,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.5139,
+     "flux": 0.33821,
+     "err": 0.16856,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.5463,
+     "flux": 0.70214,
+     "err": 0.16626,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.5797,
+     "flux": 0.56066,
+     "err": 0.1854,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.6274,
+     "flux": 0.734,
+     "err": 0.11518,
+     "n": 3,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.6678,
+     "flux": 0.40193,
+     "err": 0.19912,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7018,
+     "flux": 0.44302,
+     "err": 0.12256,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.736,
+     "flux": 0.81389,
+     "err": 0.3511,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7703,
+     "flux": 0.50092,
+     "err": 0.20064,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.8217,
+     "flux": 0.53872,
+     "err": 0.15571,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.8748,
+     "flux": 0.66134,
+     "err": 0.21881,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.9464,
+     "flux": 0.26483,
+     "err": 0.24817,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.9821,
+     "flux": 0.72357,
+     "err": 0.25793,
+     "n": 1,
+     "lower_limit": false
+    }
+   ]
+  },
+  {
+   "epoch": "S3",
+   "units": "mJy",
+   "binning": "native resolution (R~40 below 3.82 um, R~120 above)",
+   "n_exposures": 21,
+   "mjd_mean": 61157.93,
+   "points": [
+    {
+     "wavelength_um": 4.4394,
+     "flux": 0.49863,
+     "err": 0.10911,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.4863,
+     "flux": 0.6788,
+     "err": 0.15026,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.5186,
+     "flux": 0.61231,
+     "err": 0.15633,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.551,
+     "flux": 1.1126,
+     "err": 0.16741,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.5841,
+     "flux": 0.70463,
+     "err": 0.17372,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.6173,
+     "flux": 0.55131,
+     "err": 0.1688,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.6511,
+     "flux": 0.62957,
+     "err": 0.1731,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7011,
+     "flux": 0.65505,
+     "err": 0.12303,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7531,
+     "flux": 0.67872,
+     "err": 0.18341,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7871,
+     "flux": 0.43723,
+     "err": 0.18862,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.8238,
+     "flux": 0.52799,
+     "err": 0.118,
+     "n": 3,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.8597,
+     "flux": 0.7929,
+     "err": 0.22974,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.8954,
+     "flux": -0.06101,
+     "err": 0.14794,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.9312,
+     "flux": 0.25943,
+     "err": 0.1588,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.9673,
+     "flux": 0.56822,
+     "err": 0.23689,
+     "n": 1,
+     "lower_limit": false
+    }
+   ]
+  },
+  {
+   "epoch": "combined",
+   "units": "mJy",
+   "binning": "native resolution (R~40 below 3.82 um, R~120 above)",
+   "n_exposures": 43,
+   "points": [
+    {
+     "wavelength_um": 4.4178,
+     "flux": 0.48363,
+     "err": 0.16958,
+     "n": 1,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.4423,
+     "flux": 0.59015,
+     "err": 0.11031,
+     "n": 3,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.4841,
+     "flux": 0.75485,
+     "err": 0.1149,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.5164,
+     "flux": 0.48627,
+     "err": 0.13783,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.5486,
+     "flux": 0.90845,
+     "err": 0.20704,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.582,
+     "flux": 0.63756,
+     "err": 0.12747,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.6245,
+     "flux": 0.6824,
+     "err": 0.09383,
+     "n": 4,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.6582,
+     "flux": 0.53205,
+     "err": 0.13106,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7014,
+     "flux": 0.54937,
+     "err": 0.08758,
+     "n": 4,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7495,
+     "flux": 0.70753,
+     "err": 0.16308,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.7792,
+     "flux": 0.46712,
+     "err": 0.13779,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.823,
+     "flux": 0.53189,
+     "err": 0.09467,
+     "n": 5,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.865,
+     "flux": 0.6476,
+     "err": 0.12918,
+     "n": 3,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.8954,
+     "flux": -0.06101,
+     "err": 0.14794,
+     "n": 2,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.9357,
+     "flux": 0.26099,
+     "err": 0.13385,
+     "n": 3,
+     "lower_limit": false
+    },
+    {
+     "wavelength_um": 4.9789,
+     "flux": 0.43219,
+     "err": 0.12725,
+     "n": 4,
+     "lower_limit": false
+    }
+   ],
+   "band_measurements": [
+    {
+     "name": "H2O-J",
+     "type": "ratio",
+     "molecule": "H2O",
+     "band_um": [
+      1.14,
+      1.165
+     ],
+     "ref_um": [
+      1.26,
+      1.285
+     ],
+     "source": "Burgasser+2006",
+     "value": null,
+     "err": null,
+     "note": "no data in window",
+     "significant": false
+    },
+    {
+     "name": "H2O-H",
+     "type": "ratio",
+     "molecule": "H2O",
+     "band_um": [
+      1.48,
+      1.52
+     ],
+     "ref_um": [
+      1.56,
+      1.6
+     ],
+     "source": "Burgasser+2006",
+     "value": null,
+     "err": null,
+     "note": "no data in window",
+     "significant": false
+    },
+    {
+     "name": "CH4-H",
+     "type": "ratio",
+     "molecule": "CH4",
+     "band_um": [
+      1.635,
+      1.675
+     ],
+     "ref_um": [
+      1.56,
+      1.6
+     ],
+     "source": "Burgasser+2006",
+     "value": null,
+     "err": null,
+     "note": "no data in window",
+     "significant": false
+    },
+    {
+     "name": "H2O-K",
+     "type": "ratio",
+     "molecule": "H2O",
+     "band_um": [
+      1.975,
+      1.995
+     ],
+     "ref_um": [
+      2.08,
+      2.1
+     ],
+     "source": "Burgasser+2006 (not re-checked online)",
+     "value": null,
+     "err": null,
+     "note": "no data in window",
+     "significant": false
+    },
+    {
+     "name": "CH4-K",
+     "type": "ratio",
+     "molecule": "CH4",
+     "band_um": [
+      2.215,
+      2.255
+     ],
+     "ref_um": [
+      2.08,
+      2.12
+     ],
+     "source": "Burgasser+2006 (not re-checked online)",
+     "value": null,
+     "err": null,
+     "note": "no data in window",
+     "significant": false
+    },
+    {
+     "name": "CH4-3.3",
+     "type": "ratio",
+     "molecule": "CH4",
+     "band_um": [
+      3.25,
+      3.4
+     ],
+     "ref_um": [
+      3.9,
+      4.1
+     ],
+     "source": "this work (SPHEREx-specific)",
+     "value": null,
+     "err": null,
+     "note": "no data in window",
+     "significant": false
+    },
+    {
+     "name": "H2O ice 3.05",
+     "type": "depth",
+     "molecule": "H2O ice",
+     "band_um": [
+      2.95,
+      3.15
+     ],
+     "continuum_um": [
+      [
+       2.45,
+       2.65
+      ],
+      [
+       3.75,
+       3.95
+      ]
+     ],
+     "value": null,
+     "err": null,
+     "note": "no data in band or continuum windows",
+     "significant": false,
+     "interpretation": "In a brown dwarf this window traces gas-phase absorption (CH4/H2O/CO), not ice."
+    },
+    {
+     "name": "CO2 ice 4.27",
+     "type": "depth",
+     "molecule": "CO2 ice",
+     "band_um": [
+      4.22,
+      4.32
+     ],
+     "continuum_um": [
+      [
+       4.1,
+       4.18
+      ],
+      [
+       4.36,
+       4.44
+      ]
+     ],
+     "value": null,
+     "err": null,
+     "note": "no data in band or continuum windows",
+     "significant": false,
+     "interpretation": "In a brown dwarf this window traces gas-phase absorption (CH4/H2O/CO), not ice."
+    },
+    {
+     "name": "CO 4.67",
+     "type": "depth",
+     "molecule": "CO",
+     "band_um": [
+      4.62,
+      4.72
+     ],
+     "continuum_um": [
+      [
+       4.5,
+       4.58
+      ],
+      [
+       4.78,
+       4.86
+      ]
+     ],
+     "value": -0.0124,
+     "err": 0.1672,
+     "n_band": 8,
+     "absorption_sigma": -0.1,
+     "significant": false,
+     "interpretation": "In a brown dwarf this window traces gas-phase absorption (CH4/H2O/CO), not ice."
+    }
+   ]
+  }
+ ],
+ "reference_bands": [
+  {
+   "label": "H2O",
+   "phase": "gas",
+   "wavelength_um": 1.15,
+   "range_um": [
+    1.1,
+    1.17
+   ],
+   "source": "Burgasser et al. 2006 (H2O-J index window 1.140-1.165)",
+   "verified": true
+  },
+  {
+   "label": "H2O",
+   "phase": "gas",
+   "wavelength_um": 1.4,
+   "range_um": [
+    1.33,
+    1.52
+   ],
+   "source": "Burgasser et al. 2006 (H2O-H index window 1.48-1.52, red wing of the 1.4 um band)",
+   "verified": true
+  },
+  {
+   "label": "CH4",
+   "phase": "gas",
+   "wavelength_um": 1.65,
+   "range_um": [
+    1.635,
+    1.675
+   ],
+   "source": "Burgasser et al. 2006 (CH4-H index window)",
+   "verified": true
+  },
+  {
+   "label": "H2O",
+   "phase": "gas",
+   "wavelength_um": 1.9,
+   "range_um": [
+    1.8,
+    2.0
+   ],
+   "source": "standard H2O band; Burgasser et al. 2006 H2O-K window 1.975-1.995 (not re-checked online)",
+   "verified": false
+  },
+  {
+   "label": "CH4",
+   "phase": "gas",
+   "wavelength_um": 2.3,
+   "range_um": [
+    2.215,
+    2.35
+   ],
+   "source": "standard CH4 band; Burgasser et al. 2006 CH4-K window 2.215-2.255 (not re-checked online)",
+   "verified": false
+  },
+  {
+   "label": "H2O",
+   "phase": "gas",
+   "wavelength_um": 2.7,
+   "range_um": [
+    2.5,
+    2.9
+   ],
+   "source": "standard H2O fundamental region (not re-checked online)",
+   "verified": false
+  },
+  {
+   "label": "H2O ice",
+   "phase": "ice",
+   "wavelength_um": 3.05,
+   "range_um": [
+    2.95,
+    3.15
+   ],
+   "source": "SPHEREx mission page (H2O, CO2, CO ices at 3.05, 4.27, 4.67 um)",
+   "verified": true
+  },
+  {
+   "label": "CH4",
+   "phase": "gas",
+   "wavelength_um": 3.3,
+   "range_um": [
+    3.2,
+    3.4
+   ],
+   "source": "Cushing et al. 2005 (CH4 nu3 fundamental band at ~3.3 um)",
+   "verified": true
+  },
+  {
+   "label": "CO2 ice",
+   "phase": "ice",
+   "wavelength_um": 4.27,
+   "range_um": [
+    4.22,
+    4.32
+   ],
+   "source": "SPHEREx mission page",
+   "verified": true
+  },
+  {
+   "label": "CO",
+   "phase": "ice/gas",
+   "wavelength_um": 4.67,
+   "range_um": [
+    4.62,
+    4.72
+   ],
+   "source": "SPHEREx mission page (CO ice); gas-phase CO fundamental also absorbs near 4.6-4.7 um",
+   "verified": true
+  }
+ ],
+ "notes": "B2 analysis on top of B1's stacks (data/processed) and cached exposures (data/raw). Difference images: k*B - A on B1's common grid; colour range shared per detector (blue = fainter/old position, red = brighter/new position). Their target residual is NOT a variability measurement: each epoch samples different wavelengths inside a detector (see caveats). Light curves: forced aperture photometry (r = 2 px) on every exposure, corrected for the spectral shape inside each detector; fluxes in mJy; variability significance uses a 3% systematic floor. Flags: saturated = core lost, flux is a lower limit; contaminated = >20% of the aperture masked or flagged; blended = another source in the aperture. Spectra: one point per exposure at the wavelength its LVF pixel sees, binned at native resolution (per epoch + combined); band_measurements give Burgasser-style ratio indices and absorption depths with their significance; reference_bands are plot markers, not detections.",
+ "generated_at": "2026-11-15T00:38:46+00:00"
 }

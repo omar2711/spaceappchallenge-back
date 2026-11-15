@@ -3,53 +3,144 @@
   "$id": "https://spaceapps-cochabamba/ruta-del-agua/analysis.schema.json",
   "title": "SPHEREx target analysis (B2)",
   "type": "object",
-  "required": ["target_id", "difference_images", "deep_images", "light_curves", "spectra", "reference_bands",
-               "notes", "generated_at"],
+  "required": [
+    "target_id",
+    "difference_images",
+    "deep_images",
+    "light_curves",
+    "spectra",
+    "reference_bands",
+    "notes",
+    "generated_at"
+  ],
   "$defs": {
-    "pair": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
-    "epoch": {"type": "string", "pattern": "^S[0-9]+[a-z]?$"}
+    "pair": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "epoch": {
+      "type": "string",
+      "pattern": "^S[0-9]+[a-z]?$"
+    }
   },
   "properties": {
-    "target_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "target_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
     "difference_images": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["detector", "from", "to", "file", "range", "flux_scale", "caveats", "target_residual"],
+        "required": [
+          "detector",
+          "from",
+          "to",
+          "file",
+          "range",
+          "flux_scale",
+          "caveats",
+          "target_residual"
+        ],
         "properties": {
-          "detector": {"type": "integer", "minimum": 1, "maximum": 6},
-          "from": {"$ref": "#/$defs/epoch"},
-          "to": {"$ref": "#/$defs/epoch"},
-          "file": {"type": "string", "pattern": "^analysis/diff_S[0-9]+_S[0-9]+_D[1-6]\\.webp$"},
-          "range": {"$ref": "#/$defs/pair"},
-          "units": {"type": "string"},
-          "flux_scale": {"type": "number"},
-          "n_ref_stars": {"type": "integer", "minimum": 0},
-          "scale_method": {"type": "string"},
-          "mean_wavelength_um": {"$ref": "#/$defs/pair"},
+          "detector": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "from": {
+            "$ref": "#/$defs/epoch"
+          },
+          "to": {
+            "$ref": "#/$defs/epoch"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^analysis/diff_S[0-9]+_S[0-9]+_D[1-6]\\.webp$"
+          },
+          "range": {
+            "$ref": "#/$defs/pair"
+          },
+          "units": {
+            "type": "string"
+          },
+          "flux_scale": {
+            "type": "number"
+          },
+          "n_ref_stars": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "scale_method": {
+            "type": "string"
+          },
+          "mean_wavelength_um": {
+            "$ref": "#/$defs/pair"
+          },
           "caveats": {
             "type": "array",
-            "items": {"enum": ["wavelength_mismatch", "saturated_target", "few_reference_stars", "moving_target"]}
+            "items": {
+              "enum": [
+                "wavelength_mismatch",
+                "saturated_target",
+                "few_reference_stars",
+                "moving_target"
+              ]
+            }
           },
           "target_residual": {
             "type": "object",
-            "required": ["flux", "err", "significant"],
+            "required": [
+              "flux",
+              "err",
+              "significant"
+            ],
             "properties": {
-              "flux": {"type": "number"},
-              "err": {"type": "number"},
-              "fraction_of_target": {"type": ["number", "null"]},
-              "significance_sigma": {"type": ["number", "null"]},
-              "significant": {"type": "boolean"}
+              "flux": {
+                "type": "number"
+              },
+              "err": {
+                "type": "number"
+              },
+              "fraction_of_target": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "significance_sigma": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "significant": {
+                "type": "boolean"
+              }
             }
           },
           "dipole": {
             "type": "object",
             "properties": {
-              "separation_px": {"type": "number"},
-              "position_angle_deg": {"type": "number"},
-              "expected_shift_px": {"type": "number"},
-              "expected_position_angle_deg": {"type": "number"},
-              "note": {"type": "string"}
+              "separation_px": {
+                "type": "number"
+              },
+              "position_angle_deg": {
+                "type": "number"
+              },
+              "expected_shift_px": {
+                "type": "number"
+              },
+              "expected_position_angle_deg": {
+                "type": "number"
+              },
+              "note": {
+                "type": "string"
+              }
             }
           }
         }
@@ -59,13 +150,33 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["detector", "file", "epochs"],
+        "required": [
+          "detector",
+          "file",
+          "epochs"
+        ],
         "properties": {
-          "detector": {"type": "integer", "minimum": 1, "maximum": 6},
-          "file": {"type": "string", "pattern": "^analysis/deep_D[1-6]\\.webp$"},
-          "epochs": {"type": "array", "items": {"$ref": "#/$defs/epoch"}},
-          "stretch": {"type": "object"},
-          "note": {"type": "string"}
+          "detector": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^analysis/deep_D[1-6]\\.webp$"
+          },
+          "epochs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/epoch"
+            }
+          },
+          "stretch": {
+            "type": "object"
+          },
+          "note": {
+            "type": "string"
+          }
         }
       }
     },
@@ -73,25 +184,71 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["detector", "wavelength_um", "units", "points", "per_epoch", "variability"],
+        "required": [
+          "detector",
+          "wavelength_um",
+          "units",
+          "points",
+          "per_epoch",
+          "variability"
+        ],
         "properties": {
-          "detector": {"type": "integer", "minimum": 1, "maximum": 6},
-          "wavelength_um": {"$ref": "#/$defs/pair"},
-          "units": {"type": "string"},
-          "usable": {"type": "boolean"},
+          "detector": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "wavelength_um": {
+            "$ref": "#/$defs/pair"
+          },
+          "units": {
+            "type": "string"
+          },
+          "usable": {
+            "type": "boolean"
+          },
           "points": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["mjd", "flux", "err", "wavelength_um", "flag"],
+              "required": [
+                "mjd",
+                "flux",
+                "err",
+                "wavelength_um",
+                "flag"
+              ],
               "properties": {
-                "mjd": {"type": "number"},
-                "epoch": {"$ref": "#/$defs/epoch"},
-                "wavelength_um": {"type": "number"},
-                "flux": {"type": "number"},
-                "err": {"type": "number"},
-                "flux_corrected": {"type": ["number", "null"]},
-                "flag": {"enum": ["ok", "saturated", "contaminated", "edge", "blended"]}
+                "mjd": {
+                  "type": "number"
+                },
+                "epoch": {
+                  "$ref": "#/$defs/epoch"
+                },
+                "wavelength_um": {
+                  "type": "number"
+                },
+                "flux": {
+                  "type": "number"
+                },
+                "err": {
+                  "type": "number"
+                },
+                "flux_corrected": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "flag": {
+                  "enum": [
+                    "ok",
+                    "saturated",
+                    "contaminated",
+                    "edge",
+                    "blended"
+                  ]
+                }
               }
             }
           },
@@ -99,37 +256,250 @@
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["epoch", "flux", "err", "n"],
+              "required": [
+                "epoch",
+                "flux",
+                "err",
+                "n"
+              ],
               "properties": {
-                "epoch": {"$ref": "#/$defs/epoch"},
-                "mjd": {"type": "number"},
-                "flux": {"type": "number"},
-                "err": {"type": "number"},
-                "n": {"type": "integer"},
-                "lower_limit": {"type": "boolean"}
+                "epoch": {
+                  "$ref": "#/$defs/epoch"
+                },
+                "mjd": {
+                  "type": "number"
+                },
+                "flux": {
+                  "type": "number"
+                },
+                "err": {
+                  "type": "number"
+                },
+                "n": {
+                  "type": "integer"
+                },
+                "lower_limit": {
+                  "type": "boolean"
+                }
               }
             }
           },
-          "sub_epochs": {"type": "array"},
+          "sub_epochs": {
+            "type": "array"
+          },
           "variability": {
             "type": "object",
-            "required": ["significant"],
+            "required": [
+              "significant"
+            ],
             "properties": {
-              "amplitude_mag": {"type": ["number", "null"]},
-              "chi2_reduced": {"type": ["number", "null"]},
-              "p_value": {"type": ["number", "null"]},
-              "systematic_floor": {"type": "number"},
-              "significant": {"type": "boolean"},
-              "lower_limit": {"type": "boolean"},
-              "note": {"type": "string"}
+              "amplitude_mag": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "chi2_reduced": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "p_value": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "systematic_floor": {
+                "type": "number"
+              },
+              "significant": {
+                "type": "boolean"
+              },
+              "lower_limit": {
+                "type": "boolean"
+              },
+              "note": {
+                "type": "string"
+              }
             }
           }
         }
       }
     },
-    "spectra": {"type": "array"},
-    "reference_bands": {"type": "array"},
-    "notes": {"type": "string"},
-    "generated_at": {"type": "string"}
+    "spectra": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "epoch",
+          "units",
+          "points"
+        ],
+        "properties": {
+          "epoch": {
+            "type": "string",
+            "pattern": "^(S[0-9]+|combined)$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "units": {
+            "type": "string"
+          },
+          "binning": {
+            "type": "string"
+          },
+          "n_exposures": {
+            "type": "integer"
+          },
+          "mjd_mean": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string"
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "ra_deg": {
+                "type": "number"
+              },
+              "dec_deg": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "target_px": {
+                "$ref": "#/$defs/pair"
+              }
+            }
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "wavelength_um",
+                "flux",
+                "err"
+              ],
+              "properties": {
+                "wavelength_um": {
+                  "type": "number"
+                },
+                "flux": {
+                  "type": "number"
+                },
+                "err": {
+                  "type": "number"
+                },
+                "n": {
+                  "type": "integer"
+                },
+                "lower_limit": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "band_measurements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "type",
+                "value",
+                "significant"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "ratio",
+                    "depth"
+                  ]
+                },
+                "molecule": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "err": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "absorption_sigma": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "significant": {
+                  "type": "boolean"
+                },
+                "interpretation": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "reference_bands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "label",
+          "wavelength_um",
+          "verified"
+        ],
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "wavelength_um": {
+            "type": "number"
+          },
+          "range_um": {
+            "$ref": "#/$defs/pair"
+          },
+          "source": {
+            "type": "string"
+          },
+          "verified": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    }
   }
 }

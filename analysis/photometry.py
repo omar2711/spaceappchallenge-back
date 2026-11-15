@@ -20,9 +20,8 @@ from astropy.utils.exceptions import AstropyWarning
 from astropy.wcs import WCS, FITSFixedWarning
 from photutils.aperture import ApertureStats, CircularAnnulus, CircularAperture, aperture_photometry
 
-from analysis.common import RAW_ROOT
 from pipeline.stack import CONTAM_BITS, REJECT_BITS, SATURATION_BITS, bits, fill_from_rim_max, fit_sky_plane
-from pipeline.targets import reference_coord
+from pipeline.targets import target_spec
 
 log = logging.getLogger("analysis.photometry")
 warnings.simplefilter("ignore", FITSFixedWarning)
@@ -81,21 +80,25 @@ def measure_exposure(path, coord):
 
 
 def exposure_photometry(target_id, refresh=False):
-    """Photometry table for all cached exposures of a target (cached on disk)."""
-    cache = CACHE_ROOT / target_id / "photometry.ecsv"
+    """Photometry table for all cached exposures of a named target (cached on disk)."""
+    return spec_photometry(target_spec(target_id), CACHE_ROOT / target_id / "photometry.ecsv", refresh,
+                           blended=BLENDED.get(target_id, set()))
+
+
+def spec_photometry(spec, cache, refresh=False, blended=frozenset()):
+    """Forced photometry at spec.position_at(t) on every cutout in spec.raw_dir (named target or custom)."""
+    target_id = spec.id
     if cache.exists() and not refresh:
         return Table.read(cache)
-    raw = RAW_ROOT / target_id
+    raw = spec.raw_dir
     images = Table.read(raw / "images.ecsv")
-    c_ref = reference_coord(target_id)
-    blended = BLENDED.get(target_id, set())
     rows = []
     for i, r in enumerate(images):
         path = raw / r["file"]
         if not path.exists():
             continue
         mjd = (float(r["t_min"]) + float(r["t_max"])) / 2
-        c = c_ref.apply_space_motion(new_obstime=Time(mjd, format="mjd"))
+        c = spec.position_at(Time(mjd, format="mjd"))
         try:
             m = measure_exposure(path, c)
         except Exception as exc:

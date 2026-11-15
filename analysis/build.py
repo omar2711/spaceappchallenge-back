@@ -14,6 +14,7 @@ from analysis.common import PUBLIC_ROOT, SCHEMA_PATH, load_manifest, target_ids
 from analysis.diff import build_differences
 from analysis.lightcurve import light_curves
 from analysis.photometry import exposure_photometry
+from analysis.spectra import REFERENCE_BANDS, spectra_from_photometry
 
 log = logging.getLogger("analysis.build")
 
@@ -25,7 +26,9 @@ NOTES = (
     "photometry (r = 2 px) on every exposure, corrected for the spectral shape inside each detector; "
     "fluxes in mJy; variability significance uses a 3% systematic floor. Flags: saturated = core lost, flux "
     "is a lower limit; contaminated = >20% of the aperture masked or flagged; blended = another source in "
-    "the aperture."
+    "the aperture. Spectra: one point per exposure at the wavelength its LVF pixel sees, binned at native "
+    "resolution (per epoch + combined); band_measurements give Burgasser-style ratio indices and absorption "
+    "depths with their significance; reference_bands are plot markers, not detections."
 )
 
 
@@ -35,13 +38,18 @@ def build(target_id, refresh_photometry=False):
     phot = exposure_photometry(target_id, refresh=refresh_photometry)
     ranges = {d["id"]: d["wavelength_um"] for d in m["detectors"]}
     curves = light_curves(phot, ranges)
+    variable = any(c["variability"]["significant"] for c in curves)
+    spectra = spectra_from_photometry(
+        phot, kind=m["kind"],
+        combine_note=("Combines epochs of a variable target: use the per-epoch spectra for shapes."
+                      if variable else None))
     out = {
         "target_id": target_id,
         "difference_images": t1["difference_images"],
         "deep_images": t1["deep_images"],
         "light_curves": curves,
-        "spectra": [],
-        "reference_bands": [],
+        "spectra": spectra,
+        "reference_bands": REFERENCE_BANDS,
         "notes": NOTES,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }

@@ -1,4 +1,4 @@
-# analysis/ — imágenes de diferencia y curvas de luz (B2)
+# analysis/ — diferencias, curvas de luz y espectros (B2)
 
 Se construye **encima** de lo que produce el pipeline B1 (`pipeline/`), sin modificarlo:
 - Lee las sumas de `data/processed/<id>/` y los recortes en caché de `data/raw/<id>/`.
@@ -61,7 +61,23 @@ Requisitos:
 - **`variability`:** `amplitude_mag`, `p_value` y `significant` (p < 0.001 con un piso sistemático del 3 %). Si `lower_limit` es verdadero, se basa en flujos saturados y la amplitud no es fiable.
 - **`usable: false`:** no hay curva; el motivo está en `variability.note`.
 
-`spectra` y `reference_bands` quedan vacíos hasta T3.
+### Espectros (`spectra[]`) — T3
+
+- **Un espectro por pasada** (`epoch: "S1"`…) y uno **combinado** (`epoch: "combined"`).
+- **`points[]`:** `wavelength_um`, `flux` (mJy), `err`, `n` (exposiciones en el tramo) y `lower_limit` (saturado). Para graficar:
+  - `lower_limit: true` → triángulo hacia arriba.
+  - El resto → punto con barra de error.
+- **`band_measurements[]`** (solo en el combinado): `name`, `type` (`ratio` o `depth`), `value ± err`, `absorption_sigma`, `significant` (≥ 3σ) e `interpretation` (por ejemplo, que en una enana marrón la ventana "de hielo" mide gas).
+- **`reference_bands[]`:** marcadores para el gráfico (`label`, `wavelength_um`, `range_um`, `source`, `verified`). **No son detecciones.**
+
+### Espectro en coordenadas libres (base de T5)
+
+```
+python -m analysis.custom_spectrum --ra 83.80880 --dec -5.37298 --label "BN/KL" --field c2d9e7410cce7
+```
+
+- `spectrum_for_coords(ra, dec, ...)` devuelve los espectros.
+- Con `--field`, se escriben en el `analysis.json` de ese campo de demo (`public-data/custom/<id>/`), con `position.target_px` dentro del campo.
 
 ## Por qué hay corrección espectral
 
