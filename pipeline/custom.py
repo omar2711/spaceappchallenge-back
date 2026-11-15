@@ -65,11 +65,12 @@ def _manifest_rel(spec):
 
 
 def build_for_coords(ra, dec, fov_arcmin=CUSTOM_FOV_DEFAULT, max_exposures_per_group=CUSTOM_MAX_PER_GROUP_DEFAULT,
-                     progress=None, keep_raw=False, workers=DOWNLOAD_WORKERS):
+                     progress=None, keep_raw=True, workers=DOWNLOAD_WORKERS):
     """Blocking build for arbitrary coordinates. Returns {"job_id", "manifest", "cached", ...}.
 
-    progress(percent, stage, message) is called during the build. Raw cutouts (~4 MB each) are deleted
-    afterwards unless keep_raw=True; the stacks in data/processed/custom/<id>/ are kept for analysis.
+    progress(percent, stage, message) is called during the build. Raw cutouts (~4 MB each, ~145 MB per field
+    with the default 2 per group) are kept by default because analysis.field_spectrum measures spectra on them;
+    pass keep_raw=False to free disk. The stacks in data/processed/custom/<id>/ are always kept.
     Raises ValueError (bad input) or LookupError (no SPHEREx coverage).
     """
     spec = custom_spec(ra, dec, fov_arcmin, max_exposures_per_group)
@@ -168,7 +169,7 @@ def main():
     p.add_argument("--dec", type=float, required=True)
     p.add_argument("--fov", type=float, default=CUSTOM_FOV_DEFAULT)
     p.add_argument("--max-per-group", type=int, default=CUSTOM_MAX_PER_GROUP_DEFAULT)
-    p.add_argument("--keep-raw", action="store_true")
+    p.add_argument("--drop-raw", action="store_true", help="delete raw cutouts after the build")
     a = p.parse_args()
 
     import psutil
@@ -183,7 +184,7 @@ def main():
 
     threading.Thread(target=sample, daemon=True).start()
     t0 = time.time()
-    res = build_for_coords(a.ra, a.dec, a.fov, a.max_per_group, keep_raw=a.keep_raw,
+    res = build_for_coords(a.ra, a.dec, a.fov, a.max_per_group, keep_raw=not a.drop_raw,
                            progress=lambda pct, st, msg: log.info("%5.1f%% %s", pct, msg))
     stop.set()
     log.info("result: %s", res)

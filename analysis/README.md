@@ -76,7 +76,30 @@ Requisitos:
 - Formato compacto: `columns` + `rows`.
 - **No son detecciones de hielo.** Ver `docs/analysis_t3_t4.md`.
 
-### Espectro en coordenadas libres (base de T5)
+### Espectro de cualquier posición dentro de un campo — T5 (`field_spectrum.py`, para la API)
+
+```python
+from analysis.field_spectrum import spectrum_in_field, list_fields
+spectrum_in_field("m42", ra=83.80880, dec=-5.37298, label="BN/KL")   # < 1.5 s, sin descargar nada
+```
+
+- **Campos válidos:** los 5 objetivos, los presets (`hl_tau`, `trapezium`, `m42` o sus `job_id`) y cualquier campo libre cuyos recortes sigan en caché. Desde ahora `build_for_coords` los conserva por defecto: ~145 MB por campo.
+- **Preparación:**
+  - Se hace una vez por campo con `python -m analysis.field_spectrum --prepare-all`. Tarda 2–21 s por campo y ocupa 0.8–16 MB en `data/analysis/fields/<campo>/`.
+  - Guarda imagen sin fondo, varianza, máscaras, mapa de longitud de onda y una transformación lineal cielo→píxel (residuo ≤ 0.05 px).
+  - Los campos libres de ≤ 80 recortes se preparan solos en la primera consulta (~2 s).
+- **Validación:** contra el método completo (WCS por exposición), el flujo difiere en una mediana de −0.04 % (máximo 0.7 %), la longitud de onda < 0.0002 µm y la posición < 0.01 px.
+- **Tiempos medidos:**
+
+  | Consulta | Tiempo |
+  |---|---|
+  | M42 (3 posiciones, ~35 exposiciones) | 0.06–0.33 s |
+  | eps Ind B (2 posiciones, ~450 exposiciones) | ~1 s |
+  | Arranque (importar librerías), una sola vez | ~3 s |
+
+- **Errores:** `FieldNotFound`, `FieldNotPrepared`, y `ValueError` si la posición cae fuera del campo.
+
+### Espectro en coordenadas libres (descarga)
 
 ```
 python -m analysis.custom_spectrum --ra 83.80880 --dec -5.37298 --label "BN/KL" --field c2d9e7410cce7
