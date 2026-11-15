@@ -51,6 +51,8 @@ Endpoints de datos:
 - `GET /api/v1/targets/{target_id}`: devuelve el `manifest.json` del objetivo.
 - `GET /api/v1/targets/{target_id}/analysis`: devuelve diferencias y curvas de luz.
 - `GET /api/v1/custom/presets`: lista los campos personalizados precalculados.
+- `POST /api/v1/custom`: encola un campo nuevo a partir de RA/Dec.
+- `GET /api/v1/custom/{job_id}`: consulta el progreso del campo solicitado.
 - `/data/...`: sirve los WebP y JSON publicados desde `public-data/`.
 
 Para permitir otro origen del frontend, define `API_CORS_ORIGINS` como una lista separada

@@ -3,12 +3,16 @@
 import json
 import mimetypes
 import os
+import re
 from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel, ConfigDict, Field
+
+from pipeline.custom import get_status, submit_custom
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +20,18 @@ PUBLIC_DATA_ROOT = PROJECT_ROOT / "public-data"
 TARGETS_ROOT = PUBLIC_DATA_ROOT / "targets"
 TARGET_INDEX_PATH = TARGETS_ROOT / "index.json"
 CUSTOM_PRESETS_PATH = PUBLIC_DATA_ROOT / "custom" / "presets.json"
+JOB_ID_PATTERN = re.compile(r"^c[a-f0-9]{12}$")
+
+
+class CustomFieldRequest(BaseModel):
+    """Parameters accepted for an arbitrary SPHEREx field."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    ra: float = Field(ge=0, lt=360)
+    dec: float = Field(ge=-90, le=90)
+    fov_arcmin: float = Field(default=3, gt=0, le=6)
+    max_exposures_per_group: int = Field(default=2, ge=1, le=30)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -54,6 +70,11 @@ def _target_manifest_path(target_id: str) -> Path:
 def _cors_origins() -> list[str]:
     configured = os.getenv("API_CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
     return [origin.strip() for origin in configured.split(",") if origin.strip()]
+
+
+def _validate_job_id(job_id: str) -> None:
+    if not JOB_ID_PATTERN.fullmatch(job_id):
+        raise HTTPException(status_code=422, detail="Invalid custom job id")
 
 
 app = FastAPI(
@@ -125,3 +146,29 @@ def get_target_analysis(target_id: str) -> dict[str, Any]:
 def list_custom_presets() -> dict[str, Any]:
     """Lista los campos personalizados precalculados para la demo."""
     return _read_json(CUSTOM_PRESETS_PATH)
+
+
+@app.post("/api/v1/custom", tags=["custom"])
+def create_custom_field(request: CustomFieldRequest) -> JSONResponse:
+    """Encola o reutiliza la generación de un campo SPHEREx personalizado."""
+    try:
+        status = submit_custom(
+            request.ra,
+            request.dec,
+            request.fov_arcmin,
+            request.max_exposures_per_group,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    status_code = 200 if status.get("state") == "ready" else 202
+    return JSONResponse(content=status, status_code=status_code)
+
+
+@app.get("/api/v1/custom/{job_id}", tags=["custom"])
+def get_custom_field_status(job_id: str) -> dict[str, Any]:
+    """Devuelve el estado de un trabajo personalizado."""
+    _validate_job_id(job_id)
+    status = get_status(job_id)
+    if status is None:
+        raise HTTPException(status_code=404, detail=f"Unknown custom job: {job_id}")
+    return status

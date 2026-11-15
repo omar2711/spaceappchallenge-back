@@ -1,9 +1,9 @@
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app import main as api
 
 
-client = TestClient(app)
+client = TestClient(api.app)
 
 
 def test_health() -> None:
@@ -55,3 +55,60 @@ def test_published_data_does_not_allow_path_traversal() -> None:
     response = client.get("/data/../pyproject.toml")
 
     assert response.status_code == 404
+
+
+def test_create_custom_field_enqueues_valid_request(monkeypatch) -> None:
+    expected = {
+        "job_id": "c123456789abc",
+        "state": "pending",
+        "manifest": None,
+    }
+    calls = []
+
+    def fake_submit(ra, dec, fov_arcmin, max_exposures_per_group):
+        calls.append((ra, dec, fov_arcmin, max_exposures_per_group))
+        return expected
+
+    monkeypatch.setattr(api, "submit_custom", fake_submit)
+    response = client.post(
+        "/api/v1/custom",
+        json={"ra": 67.9105, "dec": 18.2327},
+    )
+
+    assert response.status_code == 202
+    assert response.json() == expected
+    assert calls == [(67.9105, 18.2327, 3, 2)]
+
+
+def test_create_custom_field_rejects_invalid_coordinates() -> None:
+    response = client.post(
+        "/api/v1/custom",
+        json={"ra": 360, "dec": 18.2327},
+    )
+
+    assert response.status_code == 422
+
+
+def test_get_custom_field_status(monkeypatch) -> None:
+    expected = {"job_id": "c123456789abc", "state": "ready", "progress": 100}
+    monkeypatch.setattr(api, "get_status", lambda job_id: expected)
+
+    response = client.get("/api/v1/custom/c123456789abc")
+
+    assert response.status_code == 200
+    assert response.json() == expected
+
+
+def test_get_custom_field_status_handles_unknown_job(monkeypatch) -> None:
+    monkeypatch.setattr(api, "get_status", lambda job_id: None)
+
+    response = client.get("/api/v1/custom/c123456789abc")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Unknown custom job: c123456789abc"
+
+
+def test_get_custom_field_status_rejects_invalid_job_id() -> None:
+    response = client.get("/api/v1/custom/not-a-job")
+
+    assert response.status_code == 422
