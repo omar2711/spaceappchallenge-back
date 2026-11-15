@@ -21,8 +21,10 @@ Ejecutar desde la carpeta del proyecto:
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,spherex]"
 ```
+
+`spherex` instala lo que necesitan los endpoints de SPHEREx (astropy, photutils, etc.).
 
 Si PowerShell bloquea la activación:
 
@@ -70,3 +72,21 @@ python -m pipeline.report                          # validación por objetivo
 - Cómo consumir los datos (API, frontend, análisis): [pipeline/README.md](pipeline/README.md)
 - Contrato del manifest: [pipeline/manifest.schema.json](pipeline/manifest.schema.json)
 - Estado y pendientes: [docs/pipeline_estado.md](docs/pipeline_estado.md)
+
+## Endpoints SPHEREx
+
+Hay que arrancar el servidor desde la raíz del repo; usa `public-data/` y `data/`.
+
+| Método y ruta | Qué hace |
+|---|---|
+| `POST /custom` | Body `{"ra", "dec", "fov_arcmin"=3, "max_exposures_per_group"=2}`. Lanza o reutiliza un campo para esas coordenadas y responde 202 con `job_id` y `state`. Responde 422 si la entrada es inválida |
+| `GET /custom/{job_id}` | `state`: `pending`, `processing` (con `progress` %), `ready` (con `manifest_url`) o `error`. Responde 404 si el `job_id` no existe |
+| `GET /spectrum?field=&ra=&dec=&label=` | Espectro de cualquier posición dentro de un campo ya calculado (los 5 objetivos, `hl_tau`, `trapezium`, `m42` o un `job_id`). Usa solo la caché y responde en ~0.1–1.5 s. Errores: 404 (campo desconocido), 409 (campo sin preparar), 422 (posición fuera del campo) |
+| `GET /fields` | Campos disponibles para `/spectrum` |
+| `GET /data/...` | `public-data/` como archivos estáticos. Por ejemplo `/data/targets/index.json`, `/data/targets/barnard/manifest.json`, `/data/custom/presets.json`, `/data/catalogs/splices.json` |
+
+**Requisitos de datos en el servidor:**
+- `/custom` descarga de IRSA, así que necesita internet. Un campo nuevo tarda ~3 minutos.
+- `/spectrum` necesita los campos preparados en `data/analysis/fields/` (~50 MB en total). Se generan con `python -m analysis.field_spectrum --prepare-all`, a partir de la caché de recortes en `data/raw/`.
+
+Las pruebas (`pytest`) usan solo datos en caché.

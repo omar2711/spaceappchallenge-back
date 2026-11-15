@@ -1,6 +1,13 @@
 """Punto de entrada de la API de Ruta del Agua."""
 
+import mimetypes
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
+from app.spherex import PUBLIC_DATA_DIR, STATIC_PREFIX
+from app.spherex import router as spherex_router
 
 
 app = FastAPI(
@@ -8,6 +15,16 @@ app = FastAPI(
     description="API para la experiencia Planet X SPHEREx de Space Apps Cochabamba.",
     version="0.1.0",
 )
+
+# El frontend se publica en otro dominio (Vercel / GitHub Pages) y los datos son públicos.
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
+
+app.include_router(spherex_router)
+
+# public-data/ (manifests, WebP, analysis.json, catálogos) como archivos estáticos en /data.
+# Windows no siempre registra .webp: sin esto se sirven como application/octet-stream.
+mimetypes.add_type("image/webp", ".webp")
+app.mount(STATIC_PREFIX, StaticFiles(directory=PUBLIC_DATA_DIR), name="data")
 
 
 @app.get("/", tags=["system"])

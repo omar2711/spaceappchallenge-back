@@ -201,7 +201,7 @@ def _measure(sci, var, hole, contam, lam, x, y, pix_sr):
         return None
     ap = CircularAperture((x, y), r=APER_R)
     ann = CircularAnnulus((x, y), r_in=ANN_IN, r_out=ANN_OUT)
-    ann_vals = ann.to_mask("center").get_values(sci)
+    ann_vals = ann.to_mask(method="center").get_values(sci)
     ann_vals = ann_vals[np.isfinite(ann_vals)]
     med = np.median(ann_vals)
     mad = 1.4826 * np.median(np.abs(ann_vals - med))
@@ -209,7 +209,7 @@ def _measure(sci, var, hole, contam, lam, x, y, pix_sr):
     bkg_med, bkg_std, n_ann = float(np.median(ann_vals[keep])), float(np.std(ann_vals[keep])), int(keep.sum())
     mask = ~np.isfinite(sci)
     phot = aperture_photometry(sci, ap, error=np.sqrt(var), mask=mask)
-    w = ap.to_mask("exact").to_image(sci.shape)
+    w = ap.to_mask(method="exact").to_image(sci.shape)
     bad_frac = float(np.sum(w * (mask | contam)) / ap.area)
     n_holes = int(np.sum((w > 0) & hole))
     to_mjy = 1e9 * pix_sr
