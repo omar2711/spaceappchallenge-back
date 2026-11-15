@@ -14,6 +14,13 @@ Registro de acuerdos del equipo. Agrega las nuevas decisiones arriba.
 
 ## Decisiones
 
+### 2026-11-14 — Tema, stack y reparto
+
+- **Contexto:** el repositorio se creó sin tema ni stack definidos.
+- **Decisión:** el proyecto es **Ruta del Agua** (cielo SPHEREx → agua → Luna → Marte → Cochabamba). Stack: Python 3.11 para datos (astroquery, astropy, photutils, Skyfield), FastAPI solo para cálculos en vivo, React + Vite + TypeScript con Aladin Lite, Plotly y Leaflet. La demo va precalculada en WebP + JSON. Frontend en Vercel o GitHub Pages.
+- **Reparto:** 6 módulos (datos SPHEREx, comparación y espectros, backend, frontend del cielo, frontend Luna y Marte, historia y entrega). Personas por asignar.
+- **Regla de oro:** agrupar por pasada y detector (1–6) y comparar siempre el mismo detector entre fechas.
+
 ### 2026-11-15 — Contrato entre pipeline, public-data y API
 
 - **Contexto:** B1 y B2 producen productos precalculados, mientras B3 necesita servirlos al frontend sin repetir descargas de IRSA.
@@ -37,10 +44,3 @@ Registro de acuerdos del equipo. Agrega las nuevas decisiones arriba.
 - **Contexto:** el frontend se desplegará en un origen distinto y necesita comprobar que los artefactos públicos estén disponibles.
 - **Decisión:** la API usa `API_CORS_ORIGINS`, permite `POST` para trabajos personalizados y usa `/health/ready` para comprobar los JSON mínimos. Render se configura mediante `render.yaml`; nunca se incluyen claves ni credenciales en el repositorio.
 - **Responsables:** B3 configura el servicio; la persona de entrega define el dominio final del frontend.
-
-### 2026-11-14 — Tema, stack y reparto
-
-- **Contexto:** el repositorio se creó sin tema ni stack definidos.
-- **Decisión:** el proyecto es **Ruta del Agua** (cielo SPHEREx → agua → Luna → Marte → Cochabamba). Stack: Python 3.11 para datos (astroquery, astropy, photutils, Skyfield), FastAPI solo para cálculos en vivo, React + Vite + TypeScript con Aladin Lite, Plotly y Leaflet. La demo va precalculada en WebP + JSON. Frontend en Vercel o GitHub Pages.
-- **Reparto:** 6 módulos (datos SPHEREx, comparación y espectros, backend, frontend del cielo, frontend Luna y Marte, historia y entrega). Personas por asignar.
-- **Regla de oro:** agrupar por pasada y detector (1–6) y comparar siempre el mismo detector entre fechas.
