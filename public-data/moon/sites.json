@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-11-15T00:00:00Z",
+  "notes": "Coordinates are approximate reference coordinates for the public demo.",
+  "sites": [
+    {
+      "id": "shackleton",
+      "name": "Crater Shackleton",
+      "category": "south_pole",
+      "latitude_deg": -89.9,
+      "longitude_deg": 0.0,
+      "water_interest": "Permanently shadowed areas may preserve water ice."
+    },
+    {
+      "id": "cabeus",
+      "name": "Crater Cabeus",
+      "category": "south_pole",
+      "latitude_deg": -85.4,
+      "longitude_deg": -35.8,
+      "water_interest": "LCROSS observations confirmed water-bearing material."
+    },
+    {
+      "id": "haworth",
+      "name": "Crater Haworth",
+      "category": "south_pole",
+      "latitude_deg": -87.5,
+      "longitude_deg": 5.0,
+      "water_interest": "A high-priority south-pole site for studying volatile deposits."
+    },
+    {
+      "id": "de-gerlache",
+      "name": "Crater de Gerlache",
+      "category": "south_pole",
+      "latitude_deg": -88.5,
+      "longitude_deg": -84.4,
+      "water_interest": "Rim regions combine long illumination with nearby shadow."
+    },
+    {
+      "id": "malapert-massif",
+      "name": "Malapert Massif",
+      "category": "south_pole",
+      "latitude_deg": -85.9,
+      "longitude_deg": 0.0,
+      "water_interest": "Candidate highland region for sustained-light operations."
+    },
+    {
+      "id": "apollo-11",
+      "name": "Apollo 11",
+      "category": "apollo",
+      "latitude_deg": 0.6741,
+      "longitude_deg": 23.4729,
+      "water_interest": "First crewed lunar landing site."
+    },
+    {
+      "id": "apollo-12",
+      "name": "Apollo 12",
+      "category": "apollo",
+      "latitude_deg": -3.0128,
+      "longitude_deg": -23.4216,
+      "water_interest": "Site of precision landing and Surveyor 3 investigation."
+    },
+    {
+      "id": "apollo-14",
+      "name": "Apollo 14",
+      "category": "apollo",
+      "latitude_deg": -3.6454,
+      "longitude_deg": -17.4714,
+      "water_interest": "Fra Mauro region sampled ancient lunar material."
+    },
+    {
+      "id": "apollo-15",
+      "name": "Apollo 15",
+      "category": "apollo",
+      "latitude_deg": 26.1322,
+      "longitude_deg": 3.6339,
+      "water_interest": "Hadley-Apennine site with geological field observations."
+    },
+    {
+      "id": "apollo-17",
+      "name": "Apollo 17",
+      "category": "apollo",
+      "latitude_deg": 20.1908,
+      "longitude_deg": 30.7717,
+      "water_interest": "Taurus-Littrow valley with volcanic and impact geology."
+    }
+  ]
+}

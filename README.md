@@ -54,6 +54,8 @@ Endpoints de datos:
 - `POST /api/v1/custom`: encola un campo nuevo a partir de RA/Dec.
 - `GET /api/v1/custom/{job_id}`: consulta el progreso del campo solicitado.
 - `GET /api/v1/visibility/cochabamba/{target_id}`: calcula visibilidad para una fecha UTC.
+- `GET /api/v1/moon/sites`: lista sitios del polo sur y sitios Apollo.
+- `GET /api/v1/moon/sites/{site_id}/conditions`: calcula Sol/Tierra para un sitio lunar.
 - `/data/...`: sirve los WebP y JSON publicados desde `public-data/`.
 
 Para permitir otro origen del frontend, define `API_CORS_ORIGINS` como una lista separada

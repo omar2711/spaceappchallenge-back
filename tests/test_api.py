@@ -132,3 +132,31 @@ def test_cochabamba_visibility_rejects_unknown_target() -> None:
     response = client.get("/api/v1/visibility/cochabamba/not-a-target")
 
     assert response.status_code == 404
+
+
+def test_list_moon_sites_contains_south_pole_and_apollo() -> None:
+    response = client.get("/api/v1/moon/sites")
+
+    assert response.status_code == 200
+    categories = {site["category"] for site in response.json()["sites"]}
+    assert {"south_pole", "apollo"} <= categories
+
+
+def test_moon_site_conditions_return_sun_and_earth_visibility() -> None:
+    response = client.get(
+        "/api/v1/moon/sites/shackleton/conditions",
+        params={"at": "2026-11-15T04:00:00Z"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["site"]["id"] == "shackleton"
+    assert "sun_altitude_deg" in body["conditions"]
+    assert "earth_visible" in body["conditions"]
+    assert body["conditions"]["model"] == "approximate IAU lunar fixed frame"
+
+
+def test_moon_site_conditions_reject_unknown_site() -> None:
+    response = client.get("/api/v1/moon/sites/not-a-site/conditions")
+
+    assert response.status_code == 404

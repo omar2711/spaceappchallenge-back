@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import Any
 
 import astropy.units as u
-from astropy.coordinates import AltAz, EarthLocation, get_sun
+import numpy as np
+from astropy.coordinates import AltAz, EarthLocation, get_body_barycentric, get_sun
 from astropy.time import Time
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,6 +26,7 @@ PUBLIC_DATA_ROOT = PROJECT_ROOT / "public-data"
 TARGETS_ROOT = PUBLIC_DATA_ROOT / "targets"
 TARGET_INDEX_PATH = TARGETS_ROOT / "index.json"
 CUSTOM_PRESETS_PATH = PUBLIC_DATA_ROOT / "custom" / "presets.json"
+MOON_SITES_PATH = PUBLIC_DATA_ROOT / "moon" / "sites.json"
 JOB_ID_PATTERN = re.compile(r"^c[a-f0-9]{12}$")
 COCHABAMBA = EarthLocation.from_geodetic(
     lon=-66.157 * u.deg,
@@ -100,6 +102,64 @@ def _altitude_azimuth(coord, observed_at: datetime) -> tuple[float, float]:
     frame = AltAz(obstime=Time(observed_at), location=COCHABAMBA)
     horizontal = coord.transform_to(frame)
     return float(horizontal.alt.deg), float(horizontal.az.deg)
+
+
+def _moon_fixed_basis(observed_at: datetime) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Return an approximate lunar body-fixed basis for the requested date."""
+    days = Time(observed_at).jd - 2451545.0
+    pole_ra = np.deg2rad(269.9949)
+    pole_dec = np.deg2rad(66.5392)
+    pole = np.array([
+        np.cos(pole_dec) * np.cos(pole_ra),
+        np.cos(pole_dec) * np.sin(pole_ra),
+        np.sin(pole_dec),
+    ])
+    reference = np.array([1.0, 0.0, 0.0])
+    x0 = reference - np.dot(reference, pole) * pole
+    x0 /= np.linalg.norm(x0)
+    y0 = np.cross(pole, x0)
+    prime_meridian = np.deg2rad(38.3213 + 13.17635815 * days)
+    x_axis = np.cos(prime_meridian) * x0 + np.sin(prime_meridian) * y0
+    y_axis = -np.sin(prime_meridian) * x0 + np.cos(prime_meridian) * y0
+    return x_axis, y_axis, pole
+
+
+def _moon_site_vector(latitude_deg: float, longitude_deg: float) -> np.ndarray:
+    latitude = np.deg2rad(latitude_deg)
+    longitude = np.deg2rad(longitude_deg)
+    return np.array([
+        np.cos(latitude) * np.cos(longitude),
+        np.cos(latitude) * np.sin(longitude),
+        np.sin(latitude),
+    ])
+
+
+def _moon_direction(vector: np.ndarray, basis: tuple[np.ndarray, np.ndarray, np.ndarray]) -> np.ndarray:
+    x_axis, y_axis, z_axis = basis
+    return np.array([np.dot(vector, x_axis), np.dot(vector, y_axis), np.dot(vector, z_axis)])
+
+
+def _lunar_site_conditions(site: dict[str, Any], observed_at: datetime) -> dict[str, Any]:
+    time = Time(observed_at)
+    moon = get_body_barycentric("moon", time).xyz.to_value(u.au)
+    sun = (get_body_barycentric("sun", time).xyz.to_value(u.au) - moon)
+    earth = (get_body_barycentric("earth", time).xyz.to_value(u.au) - moon)
+    sun /= np.linalg.norm(sun)
+    earth /= np.linalg.norm(earth)
+    basis = _moon_fixed_basis(observed_at)
+    site = _moon_site_vector(site["latitude_deg"], site["longitude_deg"])
+    sun_altitude = np.rad2deg(np.arcsin(np.clip(np.dot(site, _moon_direction(sun, basis)), -1, 1)))
+    earth_altitude = np.rad2deg(np.arcsin(np.clip(np.dot(site, _moon_direction(earth, basis)), -1, 1)))
+    phase_cosine = float(np.clip(np.dot(sun, earth), -1, 1))
+    illumination = (1 + phase_cosine) / 2
+    return {
+        "sun_altitude_deg": round(float(sun_altitude), 3),
+        "sunlit": bool(sun_altitude > 0),
+        "earth_altitude_deg": round(float(earth_altitude), 3),
+        "earth_visible": bool(earth_altitude > 0),
+        "lunar_disk_illumination": round(float(illumination), 4),
+        "model": "approximate IAU lunar fixed frame",
+    }
 
 
 app = FastAPI(
@@ -243,4 +303,32 @@ def get_cochabamba_visibility(
         },
         "visible": visible,
         "reason": reason,
+    }
+
+
+@app.get("/api/v1/moon/sites", tags=["moon"])
+def list_moon_sites() -> dict[str, Any]:
+    """Lista sitios del polo sur lunar y lugares Apollo."""
+    return _read_json(MOON_SITES_PATH)
+
+
+@app.get("/api/v1/moon/sites/{site_id}/conditions", tags=["moon"])
+def get_moon_site_conditions(
+    site_id: str,
+    at: datetime | None = Query(default=None, description="UTC date and time; defaults to now"),
+) -> dict[str, Any]:
+    """Calcula iluminación solar y visibilidad de la Tierra para un sitio lunar."""
+    sites_data = list_moon_sites()
+    site = next((item for item in sites_data.get("sites", []) if item.get("id") == site_id), None)
+    if site is None:
+        raise HTTPException(status_code=404, detail=f"Unknown lunar site: {site_id}")
+    observed_at = _observation_time(at)
+    try:
+        conditions = _lunar_site_conditions(site, observed_at)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=f"Invalid observation time: {exc}") from exc
+    return {
+        "site": site,
+        "observed_at": observed_at.isoformat(),
+        "conditions": conditions,
     }
