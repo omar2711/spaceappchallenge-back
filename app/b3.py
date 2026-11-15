@@ -1,7 +1,7 @@
 """Endpoints B3: Luna, Gaia, Cochabamba y Marte. Todo funciona sin internet (datos y efemérides locales)."""
 from fastapi import APIRouter, HTTPException, Query
 
-from b3 import cochabamba, gaia, moon
+from b3 import cochabamba, gaia, mars, moon
 from b3.ephemeris import EphemerisMissing
 
 router = APIRouter()
@@ -50,3 +50,10 @@ def cochabamba_visibility(ra: float = Query(..., ge=0, lt=360), dec: float = Que
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.get("/mars/marswalk", tags=["mars"], summary="Caminata por el cráter Jezero siguiendo a Perseverance")
+def marswalk() -> dict:
+    """Ruta (recorrido oficial simplificado), 4 paradas científicas, peligros y capas de Mars Trek (verificadas).
+    También como estático en /data/mars/marswalk.json."""
+    return mars.load()

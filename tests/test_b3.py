@@ -57,3 +57,11 @@ def test_cochabamba_visibility():
     assert not rdra["observable"] and rdra["target_events"]["culmination_alt_deg"] < 6.5
     assert client.get("/visibility", params={"ra": 10, "dec": 10, "date": "14/11/2026"}).status_code == 422
     assert client.get("/visibility", params={"ra": 10, "dec": 100}).status_code == 422
+
+
+def test_mars_marswalk():
+    d = client.get("/mars/marswalk").json()
+    assert d["crater"]["name"] == "Jezero" and len(d["stops"]) >= 3 and len(d["route"]["points"]) > 20
+    assert len(d["layers"]) >= 3 and all(L["verified"]["ok"] for L in d["layers"])
+    assert {L["kind"] for L in d["layers"]} >= {"imagery", "relief"}
+    assert client.get("/data/mars/marswalk.json").status_code == 200

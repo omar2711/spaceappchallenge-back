@@ -56,7 +56,7 @@ Response `202`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:46:14+00:00",
+  "updated_at": "2026-11-15T02:46:42+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -86,7 +86,7 @@ Response `200`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:46:14+00:00",
+  "updated_at": "2026-11-15T02:46:42+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -624,6 +624,158 @@ Response `200`:
 }
 ```
 
+### Caminata en Marte (cráter Jezero): `GET /mars/marswalk`
+
+Ruta real de Perseverance (waypoints oficiales de NASA/JPL simplificados, sol 13 → 1210, 27 km) con elevación; 4 paradas científicas (aterrizaje, Rochette, Wildcat Ridge, Cheyava Falls) con sol, fecha y tipo de roca de la página oficial de muestras; peligros (tramos > 15 % calculados con las elevaciones oficiales + contexto); y `layers[]` de Mars Trek con `url_template` `{z}/{y}/{x}` (esquema WMTS geográfico: nivel 0 = 2×1 mosaicos) y su verificación. Los mosaicos se piden a trek.nasa.gov desde el navegador (requieren internet).
+
+Request:
+
+```http
+GET /mars/marswalk
+```
+
+Response `200`:
+
+```json
+{
+  "title": "Ruta del Agua en Marte: caminata por el cráter Jezero siguiendo a Perseverance",
+  "summary": "Jezero held a lake ~3.5 billion years ago, fed by a river that built a delta. The walk follows NASA's Perseverance rover from its landing site across the cra...",
+  "crater": {
+    "name": "Jezero",
+    "lat": 18.4082,
+    "lon": 77.6873,
+    "diameter_km": 47.5,
+    "source": "http://planetarynames.wr.usgs.gov/Feature/14300"
+  },
+  "frame": "Mars planetocentric, lon east positive (-180..180), elevations relative to the Mars geoid (m)",
+  "route": {
+    "n_points": 101,
+    "length_km": 27.43,
+    "sols": [
+      13,
+      1210
+    ],
+    "points": [
+      {
+        "lat": 18.444627,
+        "lon": 77.450886,
+        "elevation_m": -2569.9,
+        "sol": 13,
+        "odometry_km": 0.0
+      },
+      {
+        "lat": 18.442008,
+        "lon": 77.450697,
+        "elevation_m": -2568.5,
+        "sol": 105,
+        "odometry_km": 0.515
+      },
+      "... (+99 más)"
+    ],
+    "source": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json",
+    "simplification": "one waypoint every >= 150 m"
+  },
+  "stops": [
+    {
+      "id": "landing",
+      "title": "Octavia E. Butler Landing",
+      "sol": 13,
+      "date": "2021-02-18 (landing)",
+      "rock_type": null,
+      "lat": 18.444627,
+      "lon": 77.450886,
+      "elevation_m": -2569.9,
+      "odometry_km": 0.0,
+      "why_water": "Landing site on the floor of an ancient lake (Jezero, ~3.5 billion years ago).",
+      "position_source": "rover waypoint at sol 13 (site 3, drive 0)"
+    },
+    {
+      "id": "rochette",
+      "title": "Rochette (crater floor)",
+      "sol": 194,
+      "date": "Sept. 6, 2021",
+      "rock_type": "Igneous",
+      "lat": 18.430739,
+      "lon": 77.444366,
+      "elevation_m": -2574.5,
+      "odometry_km": 2.17,
+      "why_water": "First rock core: igneous rock altered by water after it formed.",
+      "position_source": "rover waypoint at sol 180 (site 7, drive 0)"
+    },
+    "... (+2 más)"
+  ],
+  "hazards": {
+    "steep_segments": [
+      {
+        "type": "steep_slope",
+        "lat": 18.45789,
+        "lon": 77.406277,
+        "sol": 455,
+        "grade_percent": 21.1,
+        "segment_m": 22.6,
+        "source": "computed from official waypoint elevations"
+      },
+      {
+        "type": "steep_slope",
+        "lat": 18.491349,
+        "lon": 77.312746,
+        "sol": 1158,
+        "grade_percent": -20.7,
+        "segment_m": 32.7,
+        "source": "computed from official waypoint elevations"
+      },
+      "... (+2 más)"
+    ],
+    "terrain_context": [
+      {
+        "type": "sand",
+        "text": "Séítah ('amidst the sand' in Navajo): ripples and sand between the landing site and the delta; Perseverance drove around it."
+      },
+      {
+        "type": "slopes_boulders",
+        "text": "Delta front and crater rim: steep, boulder-strewn slopes (see steep_segments)."
+      },
+      "... (+1 más)"
+    ],
+    "steep_threshold_percent": 15.0
+  },
+  "layers": [
+    {
+      "id": "viking_color",
+      "kind": "imagery",
+      "name": "Viking MDIM 2.1 color mosaic (232 m/px)",
+      "url_template": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg",
+      "tile_scheme": "WMTS geographic (EPSG:4326-like), level 0 = 2x1 tiles of 256 px; {z}/{y}/{x} = TileMatrix/TileRow/TileCol",
+      "verified": {
+        "ok": true,
+        "test_tile": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/6/25/91.jpg",
+        "checked_at": "2026-11-15T02:44:17+00:00"
+      }
+    },
+    {
+      "id": "mola_shaded_relief",
+      "kind": "relief",
+      "name": "MGS MOLA colorized shaded relief (463 m/px)",
+      "url_template": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg",
+      "tile_scheme": "WMTS geographic (EPSG:4326-like), level 0 = 2x1 tiles of 256 px; {z}/{y}/{x} = TileMatrix/TileRow/TileCol",
+      "verified": {
+        "ok": true,
+        "test_tile": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0//default/default028mm/6/25/91.jpg",
+        "checked_at": "2026-11-15T02:44:17+00:00"
+      }
+    },
+    "... (+2 más)"
+  ],
+  "sources": {
+    "waypoints": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json",
+    "samples": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+    "gazetteer": "https://asc-planetarynames-data.s3.us-west-2.amazonaws.com/MARS_nomenclature_center_pts.kmz",
+    "mars_trek": "https://trek.nasa.gov/mars/"
+  },
+  "generated_at": "2026-11-15T02:44:17+00:00"
+}
+```
+
 ## Archivos estáticos
 
 | Ruta | Contenido |
@@ -635,6 +787,9 @@ Response `200`:
 | `/data/custom/presets.json` | **Campos de demo precalculados.** Botones de demo: enviar exactamente sus `ra`, `dec`, `fov_arcmin` y `max_exposures_per_group` a `POST /custom` para acertar la caché (o leer `manifest` directamente). |
 | `/data/custom/c2d9e7410cce7/manifest.json` | **Manifest de un campo libre.** Mismo contrato que los objetivos, `kind: custom`. |
 | `/data/catalogs/splices.json` | **Catálogo SPLICES (candidatas a hielo).** Formato compacto `columns` + `rows`. Son candidatas, NO detecciones (ver `important`). Colorear por `ice_priority` (1 protoestrella embebida, 2 otra YSO, 3 otra). |
+| `/data/moon/sites.json` | **Sitios lunares.** Lo mismo que `GET /moon/sites`. |
+| `/data/catalogs/gaia/barnard.json` | **Gaia por campo.** Lo mismo que `GET /gaia?field=barnard` (un archivo por campo). |
+| `/data/mars/marswalk.json` | **Caminata en Marte.** Lo mismo que `GET /mars/marswalk`. |
 | `/data/catalogs/3i_atlas.json` | **Cometa interestelar 3I/ATLAS.** Metadatos, enlaces de IRSA y resultados publicados de SPHEREx (sin imágenes procesadas). |
 
 ### `/data/targets/index.json`
@@ -1486,6 +1641,312 @@ Response `200`:
     "... (+2291 más)"
   ],
   "generated_at": "2026-11-15T01:17:32+00:00"
+}
+```
+
+### `/data/moon/sites.json`
+
+Response `200`:
+
+```json
+{
+  "title": "Lunar sites: Apollo 11-17 and Artemis III candidate regions",
+  "frame": "Moon Mean Earth/Polar Axis (DE421), planetocentric; lon east positive, -180..180",
+  "sources": {
+    "apollo": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (DE421 ME, from LRO images, Wagner et al. 2017, Icarus 283, 92-103). Lunar Module positions; Apo...",
+    "artemis3_regions": "NASA, 'NASA Provides Update on Artemis III Moon Landing Regions' (28 Oct 2024): nine candidate regions near the lunar south pole.",
+    "artemis3_positions": "https://planetarynames.wr.usgs.gov (IAU/USGS Gazetteer of Planetary Nomenclature, MOON_nomenclature_center_pts). Precise region polygons: USGS data release M...",
+    "apollo_history": "https://nssdc.gsfc.nasa.gov/planetary/lunar/apolloland.html"
+  },
+  "sites": [
+    {
+      "id": "apollo11",
+      "name": "Apollo 11",
+      "group": "apollo",
+      "place": "Mare Tranquillitatis (Tranquility Base)",
+      "lat": 0.67416,
+      "lon": 23.47314,
+      "position_type": "lunar_module",
+      "position_uncertainty_km": 0.01,
+      "landing_date_utc": "1969-07-20",
+      "crew_on_surface": "Neil Armstrong, Buzz Aldrin",
+      "history": "First crewed landing on the Moon.",
+      "source": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html"
+    },
+    {
+      "id": "apollo12",
+      "name": "Apollo 12",
+      "group": "apollo",
+      "place": "Oceanus Procellarum",
+      "lat": -3.0128,
+      "lon": -23.4219,
+      "position_type": "lunar_module",
+      "position_uncertainty_km": 0.01,
+      "landing_date_utc": "1969-11-19",
+      "crew_on_surface": "Pete Conrad, Alan Bean",
+      "history": "Precision landing next to the Surveyor 3 probe.",
+      "source": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html"
+    },
+    "... (+13 más)"
+  ]
+}
+```
+
+### `/data/catalogs/gaia/barnard.json`
+
+Response `200`:
+
+```json
+{
+  "field": "barnard",
+  "catalog": "Gaia DR3 (ESA/Gaia/DPAC), gaiadr3.gaia_source",
+  "g_limit": 20.0,
+  "center": {
+    "ra": 269.44622827173,
+    "dec": 4.7687196632577
+  },
+  "radius_deg": 0.04998,
+  "image_size_px": [
+    39,
+    39
+  ],
+  "epochs": [
+    {
+      "id": "S1",
+      "date_mid": "2025-09-08T01:35:00"
+    },
+    {
+      "id": "S2",
+      "date_mid": "2026-04-07T14:06:30"
+    },
+    "... (+1 más)"
+  ],
+  "notes": "Positions propagated from ref_epoch (2016.0) with proper motion only (no parallax/radial velocity). px = WebP pixel coordinates of this field's frames (origi...",
+  "n_sources": 391,
+  "sources": [
+    {
+      "source_id": "4472832130942575872",
+      "ra": 269.4485025,
+      "dec": 4.7394201,
+      "ref_epoch": 2016.0,
+      "pmra": -801.551,
+      "pmdec": 10362.394,
+      "parallax": 546.976,
+      "g_mag": 8.194,
+      "pm_total_mas_yr": 10393.35,
+      "arrow": true,
+      "epochs": {
+        "S1": {
+          "ra": 269.4463386,
+          "dec": 4.7672987,
+          "px": [
+            18.936,
+            19.832
+          ]
+        },
+        "S2": {
+          "ra": 269.4462092,
+          "dec": 4.7689657,
+          "px": [
+            19.011,
+            18.856
+          ]
+        },
+        "S3": {
+          "ra": 269.4461177,
+          "dec": 4.7701442,
+          "px": [
+            19.065,
+            18.166
+          ]
+        }
+      }
+    },
+    {
+      "source_id": "4472836292758713216",
+      "ra": 269.4438716,
+      "dec": 4.7962914,
+      "ref_epoch": 2016.0,
+      "pmra": -6.159,
+      "pmdec": 0.513,
+      "parallax": 0.977,
+      "g_mag": 11.863,
+      "pm_total_mas_yr": 6.18,
+      "arrow": false,
+      "epochs": {
+        "S1": {
+          "ra": 269.443855,
+          "dec": 4.7962928,
+          "px": [
+            20.384,
+            2.86
+          ]
+        },
+        "S2": {
+          "ra": 269.443854,
+          "dec": 4.7962929,
+          "px": [
+            20.385,
+            2.86
+          ]
+        },
+        "S3": {
+          "ra": 269.4438533,
+          "dec": 4.7962929,
+          "px": [
+            20.385,
+            2.86
+          ]
+        }
+      }
+    },
+    "... (+389 más)"
+  ],
+  "generated_at": "2026-11-15T02:40:06+00:00"
+}
+```
+
+### `/data/mars/marswalk.json`
+
+Response `200`:
+
+```json
+{
+  "title": "Ruta del Agua en Marte: caminata por el cráter Jezero siguiendo a Perseverance",
+  "summary": "Jezero held a lake ~3.5 billion years ago, fed by a river that built a delta. The walk follows NASA's Perseverance rover from its landing site across the cra...",
+  "crater": {
+    "name": "Jezero",
+    "lat": 18.4082,
+    "lon": 77.6873,
+    "diameter_km": 47.5,
+    "source": "http://planetarynames.wr.usgs.gov/Feature/14300"
+  },
+  "frame": "Mars planetocentric, lon east positive (-180..180), elevations relative to the Mars geoid (m)",
+  "route": {
+    "n_points": 101,
+    "length_km": 27.43,
+    "sols": [
+      13,
+      1210
+    ],
+    "points": [
+      {
+        "lat": 18.444627,
+        "lon": 77.450886,
+        "elevation_m": -2569.9,
+        "sol": 13,
+        "odometry_km": 0.0
+      },
+      {
+        "lat": 18.442008,
+        "lon": 77.450697,
+        "elevation_m": -2568.5,
+        "sol": 105,
+        "odometry_km": 0.515
+      },
+      "... (+99 más)"
+    ],
+    "source": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json",
+    "simplification": "one waypoint every >= 150 m"
+  },
+  "stops": [
+    {
+      "id": "landing",
+      "title": "Octavia E. Butler Landing",
+      "sol": 13,
+      "date": "2021-02-18 (landing)",
+      "rock_type": null,
+      "lat": 18.444627,
+      "lon": 77.450886,
+      "elevation_m": -2569.9,
+      "odometry_km": 0.0,
+      "why_water": "Landing site on the floor of an ancient lake (Jezero, ~3.5 billion years ago).",
+      "position_source": "rover waypoint at sol 13 (site 3, drive 0)"
+    },
+    {
+      "id": "rochette",
+      "title": "Rochette (crater floor)",
+      "sol": 194,
+      "date": "Sept. 6, 2021",
+      "rock_type": "Igneous",
+      "lat": 18.430739,
+      "lon": 77.444366,
+      "elevation_m": -2574.5,
+      "odometry_km": 2.17,
+      "why_water": "First rock core: igneous rock altered by water after it formed.",
+      "position_source": "rover waypoint at sol 180 (site 7, drive 0)"
+    },
+    "... (+2 más)"
+  ],
+  "hazards": {
+    "steep_segments": [
+      {
+        "type": "steep_slope",
+        "lat": 18.45789,
+        "lon": 77.406277,
+        "sol": 455,
+        "grade_percent": 21.1,
+        "segment_m": 22.6,
+        "source": "computed from official waypoint elevations"
+      },
+      {
+        "type": "steep_slope",
+        "lat": 18.491349,
+        "lon": 77.312746,
+        "sol": 1158,
+        "grade_percent": -20.7,
+        "segment_m": 32.7,
+        "source": "computed from official waypoint elevations"
+      },
+      "... (+2 más)"
+    ],
+    "terrain_context": [
+      {
+        "type": "sand",
+        "text": "Séítah ('amidst the sand' in Navajo): ripples and sand between the landing site and the delta; Perseverance drove around it."
+      },
+      {
+        "type": "slopes_boulders",
+        "text": "Delta front and crater rim: steep, boulder-strewn slopes (see steep_segments)."
+      },
+      "... (+1 más)"
+    ],
+    "steep_threshold_percent": 15.0
+  },
+  "layers": [
+    {
+      "id": "viking_color",
+      "kind": "imagery",
+      "name": "Viking MDIM 2.1 color mosaic (232 m/px)",
+      "url_template": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg",
+      "tile_scheme": "WMTS geographic (EPSG:4326-like), level 0 = 2x1 tiles of 256 px; {z}/{y}/{x} = TileMatrix/TileRow/TileCol",
+      "verified": {
+        "ok": true,
+        "test_tile": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/6/25/91.jpg",
+        "checked_at": "2026-11-15T02:44:17+00:00"
+      }
+    },
+    {
+      "id": "mola_shaded_relief",
+      "kind": "relief",
+      "name": "MGS MOLA colorized shaded relief (463 m/px)",
+      "url_template": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg",
+      "tile_scheme": "WMTS geographic (EPSG:4326-like), level 0 = 2x1 tiles of 256 px; {z}/{y}/{x} = TileMatrix/TileRow/TileCol",
+      "verified": {
+        "ok": true,
+        "test_tile": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0//default/default028mm/6/25/91.jpg",
+        "checked_at": "2026-11-15T02:44:17+00:00"
+      }
+    },
+    "... (+2 más)"
+  ],
+  "sources": {
+    "waypoints": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json",
+    "samples": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+    "gazetteer": "https://asc-planetarynames-data.s3.us-west-2.amazonaws.com/MARS_nomenclature_center_pts.kmz",
+    "mars_trek": "https://trek.nasa.gov/mars/"
+  },
+  "generated_at": "2026-11-15T02:44:17+00:00"
 }
 ```
 

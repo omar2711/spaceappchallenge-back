@@ -73,6 +73,15 @@ ENDPOINTS += [
      "para graficar. Sitio: 17.388°S, 66.160°W, ~2 550 m. Altura geométrica (sin refracción)."),
 ]
 
+ENDPOINTS += [
+    ("GET", "/mars/marswalk", None, "Caminata en Marte (cráter Jezero)",
+     "Ruta real de Perseverance (waypoints oficiales de NASA/JPL simplificados, sol 13 → 1210, 27 km) con elevación; "
+     "4 paradas científicas (aterrizaje, Rochette, Wildcat Ridge, Cheyava Falls) con sol, fecha y tipo de roca de la "
+     "página oficial de muestras; peligros (tramos > 15 % calculados con las elevaciones oficiales + contexto); y "
+     "`layers[]` de Mars Trek con `url_template` `{z}/{y}/{x}` (esquema WMTS geográfico: nivel 0 = 2×1 mosaicos) y "
+     "su verificación. Los mosaicos se piden a trek.nasa.gov desde el navegador (requieren internet)."),
+]
+
 # (url path, title, description)
 STATIC = [
     ("/data/targets/index.json", "Índice de los 5 objetivos", "Lista de objetivos con su `manifest`."),
@@ -92,6 +101,9 @@ STATIC = [
     ("/data/catalogs/splices.json", "Catálogo SPLICES (candidatas a hielo)",
      "Formato compacto `columns` + `rows`. Son candidatas, NO detecciones (ver `important`). Colorear por "
      "`ice_priority` (1 protoestrella embebida, 2 otra YSO, 3 otra)."),
+    ("/data/moon/sites.json", "Sitios lunares", "Lo mismo que `GET /moon/sites`."),
+    ("/data/catalogs/gaia/barnard.json", "Gaia por campo", "Lo mismo que `GET /gaia?field=barnard` (un archivo por campo)."),
+    ("/data/mars/marswalk.json", "Caminata en Marte", "Lo mismo que `GET /mars/marswalk`."),
     ("/data/catalogs/3i_atlas.json", "Cometa interestelar 3I/ATLAS", "Metadatos, enlaces de IRSA y resultados "
      "publicados de SPHEREx (sin imágenes procesadas)."),
 ]
