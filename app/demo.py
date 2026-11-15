@@ -28,6 +28,8 @@ DEMO_CHECKS = [
     ("POST", "/custom", {"ra": 83.8201, "dec": -5.3876, "fov_arcmin": 4}),
     ("GET", "/spectrum", {"field": "m42", "ra": 83.8088, "dec": -5.37298}),
     ("GET", "/spectrum", {"field": "eps_ind_b", "ra": 331.12786, "dec": -56.77502}),
+    ("GET", "/moon/sites", None),
+    ("GET", "/moon/visibility", {"site": "haworth", "start": "2026-12-01", "days": 30, "step_min": 10}),
 ]
 
 REQUIRED = [

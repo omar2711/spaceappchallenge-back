@@ -56,7 +56,7 @@ Response `202`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:29:16+00:00",
+  "updated_at": "2026-11-15T02:45:11+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -86,7 +86,7 @@ Response `200`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:29:16+00:00",
+  "updated_at": "2026-11-15T02:45:11+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -244,7 +244,178 @@ Response `200`:
     "... (+8 más)"
   ],
   "notes": "Forced aperture photometry (r = 12\") on cached exposures of the field at a fixed sky position (no proper motion). One point per exposure; saturated points ar...",
-  "elapsed_s": 0.13
+  "elapsed_s": 0.14
+}
+```
+
+### Sitios lunares (Apollo y Artemis III): `GET /moon/sites`
+
+Apollo 11–17 (posición del módulo lunar, NSSDCA, marco DE421) y las 9 regiones candidatas de Artemis III (posición = centro IAU del accidente que nombra la región, NO el centro de la región: ver `position_type` y `position_uncertainty_km`). Cada sitio cita su fuente.
+
+Request:
+
+```http
+GET /moon/sites
+```
+
+Response `200`:
+
+```json
+{
+  "title": "Lunar sites: Apollo 11-17 and Artemis III candidate regions",
+  "frame": "Moon Mean Earth/Polar Axis (DE421), planetocentric; lon east positive, -180..180",
+  "sources": {
+    "apollo": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (DE421 ME, from LRO images, Wagner et al. 2017, Icarus 283, 92-103). Lunar Module positions; Apo...",
+    "artemis3_regions": "NASA, 'NASA Provides Update on Artemis III Moon Landing Regions' (28 Oct 2024): nine candidate regions near the lunar south pole.",
+    "artemis3_positions": "https://planetarynames.wr.usgs.gov (IAU/USGS Gazetteer of Planetary Nomenclature, MOON_nomenclature_center_pts). Precise region polygons: USGS data release M...",
+    "apollo_history": "https://nssdc.gsfc.nasa.gov/planetary/lunar/apolloland.html"
+  },
+  "sites": [
+    {
+      "id": "apollo11",
+      "name": "Apollo 11",
+      "group": "apollo",
+      "place": "Mare Tranquillitatis (Tranquility Base)",
+      "lat": 0.67416,
+      "lon": 23.47314,
+      "position_type": "lunar_module",
+      "position_uncertainty_km": 0.01,
+      "landing_date_utc": "1969-07-20",
+      "crew_on_surface": "Neil Armstrong, Buzz Aldrin",
+      "history": "First crewed landing on the Moon.",
+      "source": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html"
+    },
+    {
+      "id": "apollo12",
+      "name": "Apollo 12",
+      "group": "apollo",
+      "place": "Oceanus Procellarum",
+      "lat": -3.0128,
+      "lon": -23.4219,
+      "position_type": "lunar_module",
+      "position_uncertainty_km": 0.01,
+      "landing_date_utc": "1969-11-19",
+      "crew_on_surface": "Pete Conrad, Alan Bean",
+      "history": "Precision landing next to the Surveyor 3 probe.",
+      "source": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html"
+    },
+    "... (+13 más)"
+  ]
+}
+```
+
+### Sol y Tierra desde un sitio lunar: `GET /moon/visibility`
+
+`days` ≤ 30, `step_min` 5–360 (por defecto 7 días cada 30 min); responde en < 0.2 s. `summary`: horas de sol, horas con la Tierra visible, ambas, y horas hasta el atardecer/amanecer y hasta que se oculta/sale la Tierra (null si no aplica en el rango). `windows`: intervalos (`open_start`/`open_end` = ya estaba / sigue al borde del rango). `series`: curvas para graficar. Horizonte de esfera lisa (sin relieve LOLA). Validado contra JPL Horizons (< 0.001°). Errores: 404 sitio, 422 parámetros.
+
+Request:
+
+```http
+GET /moon/visibility?site=haworth&start=2026-12-01&days=7&step_min=60
+```
+
+Response `200`:
+
+```json
+{
+  "site": {
+    "id": "haworth",
+    "name": "Haworth",
+    "group": "artemis3_candidate",
+    "lat": -87.45,
+    "lon": -5.17,
+    "position_type": "reference_feature_center"
+  },
+  "start_utc": "2026-12-01T00:00:00Z",
+  "end_utc": "2026-12-08T00:00:00Z",
+  "days": 7.0,
+  "step_min": 60,
+  "summary": {
+    "sunlit_hours": 114.0,
+    "sunlit_fraction": 0.675,
+    "earth_visible_hours": 31.0,
+    "earth_visible_fraction": 0.183,
+    "sun_and_earth_hours": 31.0,
+    "sun_up_at_start": true,
+    "earth_up_at_start": true,
+    "hours_to_sunset": 113.81,
+    "hours_to_sunrise": null,
+    "hours_to_earthset": 30.57,
+    "hours_to_earthrise": null,
+    "max_sun_elevation_deg": 2.139,
+    "earth_elevation_range_deg": [
+      -4.328,
+      0.886
+    ]
+  },
+  "windows": {
+    "sunlit": [
+      {
+        "start": null,
+        "end": "2026-12-05T17:48:31Z",
+        "hours": 113.81,
+        "open_start": true,
+        "open_end": false
+      }
+    ],
+    "earth_visible": [
+      {
+        "start": null,
+        "end": "2026-12-02T06:34:17Z",
+        "hours": 30.57,
+        "open_start": true,
+        "open_end": false
+      }
+    ],
+    "sun_and_earth": [
+      {
+        "start": null,
+        "end": "2026-12-02T06:30:00Z",
+        "hours": 30.5,
+        "open_start": true,
+        "open_end": false
+      }
+    ]
+  },
+  "series": {
+    "time_utc": [
+      "2026-12-01T00:00Z",
+      "2026-12-01T01:00Z",
+      "... (+167 más)"
+    ],
+    "hours_from_start": [
+      0.0,
+      1.0,
+      "... (+167 más)"
+    ],
+    "sun_elevation_deg": [
+      2.139,
+      2.117,
+      "... (+167 más)"
+    ],
+    "sun_azimuth_deg": [
+      285.16,
+      284.65,
+      "... (+167 más)"
+    ],
+    "earth_elevation_deg": [
+      0.886,
+      0.822,
+      "... (+167 más)"
+    ],
+    "earth_azimuth_deg": [
+      11.84,
+      11.85,
+      "... (+167 más)"
+    ]
+  },
+  "model": {
+    "ephemeris": "JPL DE421 + MOON_ME_DE421 frame (NAIF kernels), Skyfield",
+    "horizon": "smooth sphere (no LOLA relief): local terrain can block the Sun/Earth, especially near the poles",
+    "sunlit_definition": "any part of the solar disc above the horizon (centre elevation > -apparent radius)",
+    "earth_visible_definition": "any part of the Earth above the horizon",
+    "validation": "Matches JPL Horizons topocentric elevation/azimuth to < 0.001 deg (Apollo 11 site)"
+  }
 }
 ```
 

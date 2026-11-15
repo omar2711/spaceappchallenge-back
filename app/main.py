@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from app.b3 import router as b3_router
 from app.spherex import PUBLIC_DATA_DIR, STATIC_PREFIX
 from app.spherex import router as spherex_router
 
@@ -20,6 +21,7 @@ app = FastAPI(
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
 
 app.include_router(spherex_router)
+app.include_router(b3_router)
 
 # public-data/ (manifests, WebP, analysis.json, catálogos) como archivos estáticos en /data.
 # Windows no siempre registra .webp: sin esto se sirven como application/octet-stream.

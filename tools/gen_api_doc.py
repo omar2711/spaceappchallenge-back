@@ -43,6 +43,20 @@ ENDPOINTS = [
      "desconocido, 409 campo sin preparar, 422 posición fuera del campo."),
 ]
 
+ENDPOINTS += [
+    ("GET", "/moon/sites", None, "Sitios lunares (Apollo y Artemis III)",
+     "Apollo 11–17 (posición del módulo lunar, NSSDCA, marco DE421) y las 9 regiones candidatas de Artemis III "
+     "(posición = centro IAU del accidente que nombra la región, NO el centro de la región: ver `position_type` y "
+     "`position_uncertainty_km`). Cada sitio cita su fuente."),
+    ("GET", "/moon/visibility", {"site": "haworth", "start": "2026-12-01", "days": 7, "step_min": 60},
+     "Sol y Tierra desde un sitio lunar",
+     "`days` ≤ 30, `step_min` 5–360 (por defecto 7 días cada 30 min); responde en < 0.2 s. `summary`: horas de sol, "
+     "horas con la Tierra visible, ambas, y horas hasta el atardecer/amanecer y hasta que se oculta/sale la Tierra "
+     "(null si no aplica en el rango). `windows`: intervalos (`open_start`/`open_end` = ya estaba / sigue al borde del "
+     "rango). `series`: curvas para graficar. Horizonte de esfera lisa (sin relieve LOLA). Validado contra JPL "
+     "Horizons (< 0.001°). Errores: 404 sitio, 422 parámetros."),
+]
+
 # (url path, title, description)
 STATIC = [
     ("/data/targets/index.json", "Índice de los 5 objetivos", "Lista de objetivos con su `manifest`."),
