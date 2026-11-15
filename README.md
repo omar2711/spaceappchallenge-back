@@ -45,6 +45,17 @@ URLs:
 - Documentación: <http://127.0.0.1:8000/docs>
 - Salud: <http://127.0.0.1:8000/health>
 
+Endpoints de datos:
+
+- `GET /api/v1/targets`: lista los cinco objetivos SPHEREx.
+- `GET /api/v1/targets/{target_id}`: devuelve el `manifest.json` del objetivo.
+- `GET /api/v1/targets/{target_id}/analysis`: devuelve diferencias y curvas de luz.
+- `GET /api/v1/custom/presets`: lista los campos personalizados precalculados.
+- `/data/...`: sirve los WebP y JSON publicados desde `public-data/`.
+
+Para permitir otro origen del frontend, define `API_CORS_ORIGINS` como una lista separada
+por comas, por ejemplo `https://frontend.example,http://localhost:5173`.
+
 Detener el servidor con `Ctrl+C`.
 
 Salir del entorno virtual:

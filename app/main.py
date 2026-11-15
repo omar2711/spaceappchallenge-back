@@ -1,13 +1,86 @@
 """Punto de entrada de la API de Ruta del Agua."""
 
-from fastapi import FastAPI
+import json
+import mimetypes
+import os
+from pathlib import Path
+from typing import Any
+
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_DATA_ROOT = PROJECT_ROOT / "public-data"
+TARGETS_ROOT = PUBLIC_DATA_ROOT / "targets"
+TARGET_INDEX_PATH = TARGETS_ROOT / "index.json"
+CUSTOM_PRESETS_PATH = PUBLIC_DATA_ROOT / "custom" / "presets.json"
+
+
+def _read_json(path: Path) -> dict[str, Any]:
+    """Read a repository JSON artifact and fail explicitly if it is invalid."""
+    try:
+        with path.open(encoding="utf-8") as file:
+            value = json.load(file)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail="Public data is not available") from exc
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=503, detail=f"Invalid public data: {path.name}") from exc
+    if not isinstance(value, dict):
+        raise HTTPException(status_code=503, detail=f"Invalid public data shape: {path.name}")
+    return value
+
+
+def _target_entry(target_id: str) -> dict[str, Any]:
+    index = _read_json(TARGET_INDEX_PATH)
+    target = next((item for item in index.get("targets", []) if item.get("target_id") == target_id), None)
+    if target is None:
+        raise HTTPException(status_code=404, detail=f"Unknown target: {target_id}")
+    return target
+
+
+def _target_manifest_path(target_id: str) -> Path:
+    target = _target_entry(target_id)
+    manifest = target.get("manifest")
+    if not isinstance(manifest, str):
+        raise HTTPException(status_code=503, detail=f"Target {target_id} has no manifest")
+    path = (TARGETS_ROOT / manifest).resolve()
+    if TARGETS_ROOT.resolve() not in path.parents or path.name != "manifest.json":
+        raise HTTPException(status_code=503, detail=f"Invalid manifest path for {target_id}")
+    return path
+
+
+def _cors_origins() -> list[str]:
+    configured = os.getenv("API_CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+    return [origin.strip() for origin in configured.split(",") if origin.strip()]
 
 
 app = FastAPI(
     title="Ruta del Agua API",
     description="API para la experiencia Planet X SPHEREx de Space Apps Cochabamba.",
-    version="0.1.0",
+    version="0.2.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins(),
+    allow_credentials=False,
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
+
+@app.get("/data/{file_path:path}", tags=["data"])
+def get_public_data(file_path: str) -> FileResponse:
+    """Sirve únicamente los archivos publicados dentro de public-data/."""
+    root = PUBLIC_DATA_ROOT.resolve()
+    path = (root / file_path).resolve()
+    if root not in path.parents or not path.is_file():
+        raise HTTPException(status_code=404, detail="Published file not found")
+    media_type, _ = mimetypes.guess_type(path.name)
+    if path.suffix.lower() == ".webp":
+        media_type = "image/webp"
+    return FileResponse(path, media_type=media_type or "application/octet-stream")
 
 
 @app.get("/", tags=["system"])
@@ -16,6 +89,7 @@ def read_root() -> dict[str, str]:
     return {
         "name": "Ruta del Agua API",
         "status": "ok",
+        "version": app.version,
         "docs": "/docs",
     }
 
@@ -24,3 +98,30 @@ def read_root() -> dict[str, str]:
 def health_check() -> dict[str, str]:
     """Comprueba que el servicio está disponible."""
     return {"status": "ok"}
+
+
+@app.get("/api/v1/targets", tags=["targets"])
+def list_targets() -> dict[str, Any]:
+    """Lista los objetivos SPHEREx publicados."""
+    return _read_json(TARGET_INDEX_PATH)
+
+
+@app.get("/api/v1/targets/{target_id}", tags=["targets"])
+def get_target(target_id: str) -> dict[str, Any]:
+    """Devuelve el manifest completo de un objetivo."""
+    _target_entry(target_id)
+    return _read_json(_target_manifest_path(target_id))
+
+
+@app.get("/api/v1/targets/{target_id}/analysis", tags=["analysis"])
+def get_target_analysis(target_id: str) -> dict[str, Any]:
+    """Devuelve diferencias, imágenes profundas y curvas de luz de un objetivo."""
+    _target_entry(target_id)
+    analysis_path = TARGETS_ROOT / target_id / "analysis.json"
+    return _read_json(analysis_path)
+
+
+@app.get("/api/v1/custom/presets", tags=["custom"])
+def list_custom_presets() -> dict[str, Any]:
+    """Lista los campos personalizados precalculados para la demo."""
+    return _read_json(CUSTOM_PRESETS_PATH)
