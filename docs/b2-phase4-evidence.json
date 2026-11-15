@@ -1,0 +1,423 @@
+{
+  "recorded_at_utc": "2026-11-15T01:43:09.326803+00:00",
+  "scope": "technical_offline_integration_with_partial_real_science_validation",
+  "branch": "feature/b2-science",
+  "package": ".b2-runs/phase4-demo",
+  "manifest_sha256": "e90e47fc638d9933b47cd9eb73c1cadb76f689f0df57a6b6e54344439c7a57c7",
+  "integrity": {
+    "valid": true,
+    "files_verified": 48,
+    "fits_verified": 12,
+    "target_count": 5,
+    "issues": [],
+    "warnings": [
+      "Integrity verification does not validate a detection, calibration or light curve",
+      "Hardlinked FITS share storage with the local cache; use read-only serving"
+    ]
+  },
+  "fits": [
+    {
+      "path": "data/04bdb21223efffa0f337c95a8503def03b2b4275ab4ec5121efbb4aca23fffee.fits",
+      "size_bytes": 3951360,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/085a5d6ea04f536714ee76a5270a3384298b21578f6c2b9c90b5e0f7723770dc.fits",
+      "size_bytes": 3951360,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/1e4bf95b90f9eb7726d63cdac33580652f846dfdc8d3c22f660039f7019b9621.fits",
+      "size_bytes": 3954240,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/2b2049ce22896e5444213f587e490d66a91918f7875d3b1df7e9e3f6baa2693e.fits",
+      "size_bytes": 3951360,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/3fbccd4bdf3f9ec99b88fc7bfbf25cba9bb8353253e1f1e021bdeaba00c6bfbb.fits",
+      "size_bytes": 3954240,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/707a64f5488f194b702957efb6496def6a473a3daae41fa2e885df29d9d2dae0.fits",
+      "size_bytes": 3951360,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/9a3f793e2598d976eebbbb93ca66ff70e4b728c76ec4746b98546c07516b2f3c.fits",
+      "size_bytes": 4037760,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/bc3b926e183c3fa0540751ba5ae86542ce8817dc06ba3c9271fc78183da327d3.fits",
+      "size_bytes": 4037760,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/c8a19f4154b96fedc0f00e61ca35b54860ec62c80843ac65d81c2c9ad2bfe45a.fits",
+      "size_bytes": 4037760,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/d44b97795b9b0afc2ad28d6605c62b36c88fe21058f819100a75f8d865cae7d2.fits",
+      "size_bytes": 3951360,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/f63b8646eb2f93ea8ac316cd8f0b33f62d5642ac1a8f540b40e4056b43cfed69.fits",
+      "size_bytes": 3954240,
+      "shares_cache_storage": true
+    },
+    {
+      "path": "data/fb40d7c872068dfb9dd643000b3c3a1559ba7569d251648f684687adefdb4a19.fits",
+      "size_bytes": 3951360,
+      "shares_cache_storage": true
+    }
+  ],
+  "logical_fits_bytes": 47684160,
+  "original_cache_preserved": [
+    {
+      "path": ".b2-cache/04bdb21223efffa0f337c95a8503def03b2b4275ab4ec5121efbb4aca23fffee.fits",
+      "sha256": "76fd847e32883654e43ee33b2ba5ed2846de42ea341d693e80ded7c587f31e0e",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/085a5d6ea04f536714ee76a5270a3384298b21578f6c2b9c90b5e0f7723770dc.fits",
+      "sha256": "22adb4dee80f4b93fb9ad35b822fe95fc6a484b0f24ed409b9e16912511565b8",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/1e4bf95b90f9eb7726d63cdac33580652f846dfdc8d3c22f660039f7019b9621.fits",
+      "sha256": "8c14e5d6a5577114f7693da4e4036cf8b6f8229c49fb2eb643204fb20f23c975",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/23a17061fadd1b7187129ba913bfa122c4e8a8d2dbfa13c1a986d25192569b4e.fits",
+      "sha256": "c2d2b9ff7693f5d60922060f26b275c544975747567db5b1abb7c8f372623c59",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/2b2049ce22896e5444213f587e490d66a91918f7875d3b1df7e9e3f6baa2693e.fits",
+      "sha256": "1bea640a2ef4ed1e2fa33243cb281378c27e5029ae3d124a04a121b3d6078b03",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/3fbccd4bdf3f9ec99b88fc7bfbf25cba9bb8353253e1f1e021bdeaba00c6bfbb.fits",
+      "sha256": "7dc742fb3c4c7b008117a2f48b79ce82c0d2e584569a6e4f1e0d769ce80abcb1",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/707a64f5488f194b702957efb6496def6a473a3daae41fa2e885df29d9d2dae0.fits",
+      "sha256": "c10eedb31af94ad1f18adfd821c624c1be3838d67a52ebaecdf846e349bfb434",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/9a3f793e2598d976eebbbb93ca66ff70e4b728c76ec4746b98546c07516b2f3c.fits",
+      "sha256": "630f3f8e5b8f5b49c02402b317e657e647d713255bf7fd3651c21d63cafa8f98",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/aee66684db2500d39766e192459b9bbed7572b4f103e5903037b6529d8f4e0f7.fits",
+      "sha256": "9e043c59c7f58774b0051053a57b0d58e7a9fee2fff885ff02767c81ca1ba806",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/bc3b926e183c3fa0540751ba5ae86542ce8817dc06ba3c9271fc78183da327d3.fits",
+      "sha256": "936e0acc5be3c6229d9a6e954e26e93e0d4f7bc2ce73d3b1b7d6080ca30d5741",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/c8a19f4154b96fedc0f00e61ca35b54860ec62c80843ac65d81c2c9ad2bfe45a.fits",
+      "sha256": "737a6fe87acbe3308e91f250dba1970f2fb95b06bbe95b750677167a7a66aa5c",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/d44b97795b9b0afc2ad28d6605c62b36c88fe21058f819100a75f8d865cae7d2.fits",
+      "sha256": "4857e47d9274bd279f718a89b3b7f577e902a30c3d5059af5219299a65dd9f53",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/f63b8646eb2f93ea8ac316cd8f0b33f62d5642ac1a8f540b40e4056b43cfed69.fits",
+      "sha256": "7f667289c1007048548636647a6af7ba4acbd24c51c1a813e8e761551bb2d14d",
+      "unchanged": true
+    },
+    {
+      "path": ".b2-cache/fb40d7c872068dfb9dd643000b3c3a1559ba7569d251648f684687adefdb4a19.fits",
+      "sha256": "856f28d0d12279bb8877780030e73ae5ffbafdbe2930e3de38a74ff6c16f6048",
+      "unchanged": true
+    }
+  ],
+  "test_reports": [
+    {
+      "path": ".b2-runs/phase4-tests.xml",
+      "sha256": "7d83d9a3088a174213edd8ee2dd15dba7bc4d93c1c7dbb3e456a1abd06cbfe80",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "2",
+      "tests": "130",
+      "time": "106.152",
+      "timestamp": "2026-11-15T02:35:11.710969+01:00",
+      "hostname": "KingCesar"
+    },
+    {
+      "path": ".b2-runs/phase4-contract-tests.xml",
+      "sha256": "eccaa0cd0ae7fe7a54f80a7c7665b9252325f98948823af08a09747e33d4931d",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "2",
+      "time": "37.842",
+      "timestamp": "2026-11-15T02:40:13.432756+01:00",
+      "hostname": "KingCesar"
+    }
+  ],
+  "typing": "mypy: success, 26 source files",
+  "summary_path": ".b2-runs/phase4-final-summary.json",
+  "summary_sha256": "4a421829d15f832ba9cb4063e8f8aa28004a179ab4304c3e976d6c4ecaeb144f",
+  "reproduction": {
+    "success": true,
+    "targets_reprocessed": 5,
+    "measurements_compared": 1,
+    "mismatched_targets": []
+  },
+  "target_statuses": [
+    {
+      "target_id": "Barnard's Star",
+      "processing_status": "failed",
+      "observation_metadata": {
+        "availability": "available",
+        "reason": "Cached observation metadata; limited query, not complete coverage"
+      },
+      "photometry": {
+        "availability": "unavailable",
+        "reason": "No accepted photometry under the recorded quality/background recipe"
+      },
+      "spectra": {
+        "availability": "unavailable",
+        "reason": "Read method, flags, calibration and epoch metadata; sparse aperture samples are not a complete spectrum"
+      },
+      "light_curve": {
+        "availability": "unavailable",
+        "reason": "No validated temporal curve registered; response/aperture calibration pending"
+      },
+      "differences": {
+        "availability": "blocked",
+        "reason": "B1 has not supplied a registered compatible real pair"
+      },
+      "warnings": [
+        "Sparse spectral samples only; no complete official forced-photometry spectrum acquired",
+        "Aperture growth is diagnostic, not an aperture/PSF correction",
+        "No response_id/calibrated total flux per epoch; no validated light curve",
+        "Observer parallax/orbital motion and blending require further validation",
+        "Barycentric astrometry; observer parallax and orbital motion are not modeled",
+        "Epsilon Indi B may be unresolved Ba/Bb; not Epsilon Indi A",
+        "Proper motion propagated to FITS epoch; observer parallax is not modeled",
+        "Preliminary finite aperture; no validated total-flux calibration or temporal light curve",
+        "Budget-limited acquisition does not establish archive completeness",
+        "ValueError: Aperture contains invalid or rejected pixels (n=12; flags=['TRANSIENT', 'OVERFLOW', 'SUR_ERROR', 'BLOOM'])",
+        "ValueError: Aperture contains invalid or rejected pixels (n=27; flags=['TRANSIENT', 'OVERFLOW', 'SUR_ERROR', 'BLOOM'])",
+        "Scientific availability does not establish a source or molecular detection"
+      ]
+    },
+    {
+      "target_id": "Epsilon Indi B",
+      "processing_status": "failed",
+      "observation_metadata": {
+        "availability": "available",
+        "reason": "Cached observation metadata; limited query, not complete coverage"
+      },
+      "photometry": {
+        "availability": "unavailable",
+        "reason": "No accepted photometry under the recorded quality/background recipe"
+      },
+      "spectra": {
+        "availability": "unavailable",
+        "reason": "Read method, flags, calibration and epoch metadata; sparse aperture samples are not a complete spectrum"
+      },
+      "light_curve": {
+        "availability": "unavailable",
+        "reason": "No validated temporal curve registered; response/aperture calibration pending"
+      },
+      "differences": {
+        "availability": "blocked",
+        "reason": "B1 has not supplied a registered compatible real pair"
+      },
+      "warnings": [
+        "Sparse spectral samples only; no complete official forced-photometry spectrum acquired",
+        "Aperture growth is diagnostic, not an aperture/PSF correction",
+        "No response_id/calibrated total flux per epoch; no validated light curve",
+        "Observer parallax/orbital motion and blending require further validation",
+        "Barycentric astrometry; observer parallax and orbital motion are not modeled",
+        "Epsilon Indi B may be unresolved Ba/Bb; not Epsilon Indi A",
+        "Proper motion propagated to FITS epoch; observer parallax is not modeled",
+        "Preliminary finite aperture; no validated total-flux calibration or temporal light curve",
+        "Budget-limited acquisition does not establish archive completeness",
+        "ValueError: Fewer than 20 valid background pixels (n=0; additional background mask=2097152)",
+        "Scientific availability does not establish a source or molecular detection"
+      ]
+    },
+    {
+      "target_id": "WISE 0855",
+      "processing_status": "partial",
+      "observation_metadata": {
+        "availability": "available",
+        "reason": "Cached observation metadata; limited query, not complete coverage"
+      },
+      "photometry": {
+        "availability": "preliminary",
+        "reason": "Finite-aperture estimates remain unvalidated"
+      },
+      "spectra": {
+        "availability": "incomplete",
+        "reason": "Read method, flags, calibration and epoch metadata; sparse aperture samples are not a complete spectrum"
+      },
+      "light_curve": {
+        "availability": "unavailable",
+        "reason": "No validated temporal curve registered; response/aperture calibration pending"
+      },
+      "differences": {
+        "availability": "blocked",
+        "reason": "B1 has not supplied a registered compatible real pair"
+      },
+      "warnings": [
+        "Sparse spectral samples only; no complete official forced-photometry spectrum acquired",
+        "Aperture growth is diagnostic, not an aperture/PSF correction",
+        "No response_id/calibrated total flux per epoch; no validated light curve",
+        "Observer parallax/orbital motion and blending require further validation",
+        "Barycentric astrometry; observer parallax and orbital motion are not modeled",
+        "Epsilon Indi B may be unresolved Ba/Bb; not Epsilon Indi A",
+        "Proper motion propagated to FITS epoch; observer parallax is not modeled",
+        "Preliminary finite aperture; no validated total-flux calibration or temporal light curve",
+        "Budget-limited acquisition does not establish archive completeness",
+        "ValueError: Aperture contains invalid or rejected pixels (n=1; flags=['OUTLIER'])",
+        "WISE 0855: preliminary aperture S/N=1.16; no detection asserted",
+        "Sparse finite-aperture spectrophotometry, NOT a complete calibrated source spectrum",
+        "No aperture/PSF/colour correction; statistical errors exclude calibration systematics",
+        "Non-simultaneous samples are not combined; variability may change spectral appearance",
+        "Negative fluxes are retained; no molecular detection inferred",
+        "At least one sample has |S/N| < 3; these flux estimates are not detections",
+        "Scientific availability does not establish a source or molecular detection"
+      ]
+    },
+    {
+      "target_id": "RW Aurigae",
+      "processing_status": "failed",
+      "observation_metadata": {
+        "availability": "available",
+        "reason": "Cached observation metadata; limited query, not complete coverage"
+      },
+      "photometry": {
+        "availability": "unavailable",
+        "reason": "No accepted photometry under the recorded quality/background recipe"
+      },
+      "spectra": {
+        "availability": "unavailable",
+        "reason": "Read method, flags, calibration and epoch metadata; sparse aperture samples are not a complete spectrum"
+      },
+      "light_curve": {
+        "availability": "unavailable",
+        "reason": "No validated temporal curve registered; response/aperture calibration pending"
+      },
+      "differences": {
+        "availability": "blocked",
+        "reason": "B1 has not supplied a registered compatible real pair"
+      },
+      "warnings": [
+        "Sparse spectral samples only; no complete official forced-photometry spectrum acquired",
+        "Aperture growth is diagnostic, not an aperture/PSF correction",
+        "No response_id/calibrated total flux per epoch; no validated light curve",
+        "Observer parallax/orbital motion and blending require further validation",
+        "Barycentric astrometry; observer parallax and orbital motion are not modeled",
+        "Epsilon Indi B may be unresolved Ba/Bb; not Epsilon Indi A",
+        "Proper motion propagated to FITS epoch; observer parallax is not modeled",
+        "Preliminary finite aperture; no validated total-flux calibration or temporal light curve",
+        "Budget-limited acquisition does not establish archive completeness",
+        "HTTPStatusError: Server error '503 Service Unavailable' for url 'https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W37_1A/l2b-v27-2026-235/5/level2_2025W37_1A_0068_1D5_spx_l2b-v27-2026-235.fits?center=76.95658584374524%2C30.401293120768827d&size=0.03'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503",
+        "ValueError: Fewer than 20 valid background pixels (n=0; additional background mask=2097152)",
+        "ValueError: Aperture contains invalid or rejected pixels (n=26; flags=['TRANSIENT', 'OVERFLOW', 'SUR_ERROR', 'BLOOM'])",
+        "ValueError: Aperture contains invalid or rejected pixels (n=2; flags=['TRANSIENT', 'OVERFLOW', 'SUR_ERROR', 'BLOOM'])",
+        "Scientific availability does not establish a source or molecular detection"
+      ]
+    },
+    {
+      "target_id": "R Draconis",
+      "processing_status": "failed",
+      "observation_metadata": {
+        "availability": "available",
+        "reason": "Cached observation metadata; limited query, not complete coverage"
+      },
+      "photometry": {
+        "availability": "unavailable",
+        "reason": "No accepted photometry under the recorded quality/background recipe"
+      },
+      "spectra": {
+        "availability": "unavailable",
+        "reason": "Read method, flags, calibration and epoch metadata; sparse aperture samples are not a complete spectrum"
+      },
+      "light_curve": {
+        "availability": "unavailable",
+        "reason": "No validated temporal curve registered; response/aperture calibration pending"
+      },
+      "differences": {
+        "availability": "blocked",
+        "reason": "B1 has not supplied a registered compatible real pair"
+      },
+      "warnings": [
+        "Sparse spectral samples only; no complete official forced-photometry spectrum acquired",
+        "Aperture growth is diagnostic, not an aperture/PSF correction",
+        "No response_id/calibrated total flux per epoch; no validated light curve",
+        "Observer parallax/orbital motion and blending require further validation",
+        "Barycentric astrometry; observer parallax and orbital motion are not modeled",
+        "Epsilon Indi B may be unresolved Ba/Bb; not Epsilon Indi A",
+        "Proper motion propagated to FITS epoch; observer parallax is not modeled",
+        "Preliminary finite aperture; no validated total-flux calibration or temporal light curve",
+        "Budget-limited acquisition does not establish archive completeness",
+        "ValueError: Aperture contains invalid or rejected pixels (n=26; flags=['TRANSIENT', 'OVERFLOW', 'SUR_ERROR', 'BLOOM'])",
+        "ValueError: Aperture contains invalid or rejected pixels (n=30; flags=['TRANSIENT', 'OVERFLOW', 'SUR_ERROR', 'BLOOM'])",
+        "ValueError: Aperture contains invalid or rejected pixels (n=25; flags=['OVERFLOW', 'SUR_ERROR', 'NONFUNC', 'BLOOM'])",
+        "Scientific availability does not establish a source or molecular detection"
+      ]
+    }
+  ],
+  "scientific_limitations": [
+    "No validated complete light curves or spectra",
+    "No real temporal difference pair supplied by B1",
+    "WISE 0855 preliminary aperture SNR about 1.157 is not a detection",
+    "SPLICES match is a catalog candidate, not a molecular detection"
+  ],
+  "phase4_downloads": [],
+  "live_tests": "Two limited NASA/IPAC integration queries passed; see test report. No raw FITS downloaded in phase4.",
+  "source_hashes": {
+    "app/b2/__init__.py": "048951b0b8632453ed2a0dc6de5efc9ca7855d796bdcc7e5ac5ad99d52ec9366",
+    "app/b2/archive.py": "92785d1386ce183e278b70c3daea0f98b77753bdd47f186e959a2b18f08e35cf",
+    "app/b2/b1_adapter.py": "d9392fdaa0252ab0237e47ea5eceeca1e65e64e6b27d4035227758be973af007",
+    "app/b2/catalog.py": "acd0eb619cb26d645027a7dba1eeb597c382a771e3216b6b96742cf181ac69da",
+    "app/b2/catalog_snapshot.py": "f448d6fc0a750be633abb6b285f6a08d48f75bb9e8058965033a26d656e5583f",
+    "app/b2/comet.py": "122fa8070cad4ee910bc9897c55f0425f46bfa95ef9876bbde4e78f71b573c0f",
+    "app/b2/compatibility.py": "4f9de14744d193da380c937e59f26de69884cbdf74011322b0a015458cc96351",
+    "app/b2/demo.py": "91b624005e1a08cc62e3770abe88b0caac0d94811b1f125fee78a4508dde98f4",
+    "app/b2/difference_export.py": "e539c83599c4036cf463957c7775bd6ff4fb0b0dfa37c321c1cd2f7b42fd0ead",
+    "app/b2/fits_io.py": "b554e7ff324c154e2ba2a6f0ae301b0be12893f4d6c2d3d4a06ba3fe4d37fde5",
+    "app/b2/images.py": "65433fc045c41bd1bf6186bf64953b4424a7422b461bdb3e2628615a2b57f149",
+    "app/b2/lightcurves.py": "056cae9075ca844905020d6304457d88d4a51641f166a59c2cb25fc9d2387f86",
+    "app/b2/models.py": "e2fdb1ec5b967fb7991d3d8e6b34165b32ba48ecf9fe9110a64b06f070693511",
+    "app/b2/observation_models.py": "bcb6fd792e74bd10de4867812864b92b2b4f5fe686d2df095cfbd79e2beda9ae",
+    "app/b2/offline_bundle.py": "8633178cd6c28a447ac9161f5d615d51dcad41d15ff97dc20e1288f4a72750c1",
+    "app/b2/offline_demo.py": "9d18a754a750d2aa00cda60da535658273b3d7bf7e2fde41e931681311efcce1",
+    "app/b2/phase3.py": "0c6383ba3c2c4ddabfc77778690d2b18b6adfe57b7a7cc1b8185e622ff58a110",
+    "app/b2/photometry.py": "3caae3cc8fb23568cdd1409efa10aef5e0a2d2650f60d1446cc0dd98ffb202ae",
+    "app/b2/pipeline.py": "d9fd6538fb4373801a778c7418b9d42e04638d325d6cf4688a94cca7e6404b39",
+    "app/b2/safe_paths.py": "e8f8aca8ee2a8f4cfe7ffcf778e827b67e84a4187e2526bcf48f9f51e514ee62",
+    "app/b2/service.py": "92b1a6fae1aa314b12b37fce3f30f6c06e80199129795e03fa90efd627a4e74e",
+    "app/b2/spatial_wcs.py": "c40b8f8461ec60c485446af97d04d7731e198b344e8c21a8936872229841feaf",
+    "app/b2/spectra.py": "b65e2590d78a31126c26c18c78855f3768afac983a734d4c0e596b89bd8eab0e",
+    "app/b2/spectral_products.py": "33f74f5a5b471d10b9312583044d6ff963922c7758489c13a0246847f32819b3",
+    "app/b2/targets.py": "5d1ca08aa4381ead3bbddfed2184229dd86a9840b47476716878757d845f1eb7",
+    "app/b2/validated_images.py": "168e7f72aac202ddc391f7ce777e33fe8d0be2f847f1fdbde8579367e52e08ca"
+  }
+}
