@@ -1,0 +1,12 @@
+astroquery>=0.4.10
+astropy>=6.1
+numpy
+pyvo
+reproject
+scipy
+pyyaml
+requests
+pillow
+matplotlib
+jsonschema
+psutil

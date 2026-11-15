@@ -8,3 +8,34 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# ===== SPHEREx pipeline (data is downloaded/regenerated, never committed) =====
+data/
+*.fits
+*.fit
+*.fits.gz
+*.fits.fz
+*.part
+.astropy/
+
+# Large files
+*.zip
+*.tar.gz
+*.7z
+*.mp4
+*.mov
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Fields generated on demand by the API (pipeline/custom.py); only the demo presets are versioned
+public-data/custom/*
+!public-data/custom/presets.json
+!public-data/custom/cd2f34edd4880/
+!public-data/custom/c849cdb29dee1/
+!public-data/custom/c2d9e7410cce7/

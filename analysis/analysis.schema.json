@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaceapps-cochabamba/ruta-del-agua/analysis.schema.json",
+  "title": "SPHEREx target analysis (B2)",
+  "type": "object",
+  "required": ["target_id", "difference_images", "deep_images", "light_curves", "spectra", "reference_bands",
+               "notes", "generated_at"],
+  "$defs": {
+    "pair": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+    "epoch": {"type": "string", "pattern": "^S[0-9]+[a-z]?$"}
+  },
+  "properties": {
+    "target_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "difference_images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["detector", "from", "to", "file", "range", "flux_scale", "caveats", "target_residual"],
+        "properties": {
+          "detector": {"type": "integer", "minimum": 1, "maximum": 6},
+          "from": {"$ref": "#/$defs/epoch"},
+          "to": {"$ref": "#/$defs/epoch"},
+          "file": {"type": "string", "pattern": "^analysis/diff_S[0-9]+_S[0-9]+_D[1-6]\\.webp$"},
+          "range": {"$ref": "#/$defs/pair"},
+          "units": {"type": "string"},
+          "flux_scale": {"type": "number"},
+          "n_ref_stars": {"type": "integer", "minimum": 0},
+          "scale_method": {"type": "string"},
+          "mean_wavelength_um": {"$ref": "#/$defs/pair"},
+          "caveats": {
+            "type": "array",
+            "items": {"enum": ["wavelength_mismatch", "saturated_target", "few_reference_stars", "moving_target"]}
+          },
+          "target_residual": {
+            "type": "object",
+            "required": ["flux", "err", "significant"],
+            "properties": {
+              "flux": {"type": "number"},
+              "err": {"type": "number"},
+              "fraction_of_target": {"type": ["number", "null"]},
+              "significance_sigma": {"type": ["number", "null"]},
+              "significant": {"type": "boolean"}
+            }
+          },
+          "dipole": {
+            "type": "object",
+            "properties": {
+              "separation_px": {"type": "number"},
+              "position_angle_deg": {"type": "number"},
+              "expected_shift_px": {"type": "number"},
+              "expected_position_angle_deg": {"type": "number"},
+              "note": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "deep_images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["detector", "file", "epochs"],
+        "properties": {
+          "detector": {"type": "integer", "minimum": 1, "maximum": 6},
+          "file": {"type": "string", "pattern": "^analysis/deep_D[1-6]\\.webp$"},
+          "epochs": {"type": "array", "items": {"$ref": "#/$defs/epoch"}},
+          "stretch": {"type": "object"},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "light_curves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["detector", "wavelength_um", "units", "points", "per_epoch", "variability"],
+        "properties": {
+          "detector": {"type": "integer", "minimum": 1, "maximum": 6},
+          "wavelength_um": {"$ref": "#/$defs/pair"},
+          "units": {"type": "string"},
+          "usable": {"type": "boolean"},
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["mjd", "flux", "err", "wavelength_um", "flag"],
+              "properties": {
+                "mjd": {"type": "number"},
+                "epoch": {"$ref": "#/$defs/epoch"},
+                "wavelength_um": {"type": "number"},
+                "flux": {"type": "number"},
+                "err": {"type": "number"},
+                "flux_corrected": {"type": ["number", "null"]},
+                "flag": {"enum": ["ok", "saturated", "contaminated", "edge", "blended"]}
+              }
+            }
+          },
+          "per_epoch": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["epoch", "flux", "err", "n"],
+              "properties": {
+                "epoch": {"$ref": "#/$defs/epoch"},
+                "mjd": {"type": "number"},
+                "flux": {"type": "number"},
+                "err": {"type": "number"},
+                "n": {"type": "integer"},
+                "lower_limit": {"type": "boolean"}
+              }
+            }
+          },
+          "sub_epochs": {"type": "array"},
+          "variability": {
+            "type": "object",
+            "required": ["significant"],
+            "properties": {
+              "amplitude_mag": {"type": ["number", "null"]},
+              "chi2_reduced": {"type": ["number", "null"]},
+              "p_value": {"type": ["number", "null"]},
+              "systematic_floor": {"type": "number"},
+              "significant": {"type": "boolean"},
+              "lower_limit": {"type": "boolean"},
+              "note": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "spectra": {"type": "array"},
+    "reference_bands": {"type": "array"},
+    "notes": {"type": "string"},
+    "generated_at": {"type": "string"}
+  }
+}
