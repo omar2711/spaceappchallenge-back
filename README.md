@@ -90,3 +90,24 @@ Hay que arrancar el servidor desde la raíz del repo; usa `public-data/` y `data
 - `/spectrum` necesita los campos preparados en `data/analysis/fields/` (~50 MB en total). Se generan con `python -m analysis.field_spectrum --prepare-all`, a partir de la caché de recortes en `data/raw/`.
 
 Las pruebas (`pytest`) usan solo datos en caché.
+
+## Modo demo local (sin internet)
+
+Es el plan principal para la presentación: la red del lugar puede fallar.
+
+```powershell
+demo.bat                                  # o: .venv\Scripts\python -m app.demo
+```
+
+- **Qué hace:** verifica los datos, bloquea toda conexión de red saliente y prueba cada endpoint. Si todo está bien, levanta la API en `http://localhost:8000` (Swagger en `/docs`).
+- **Desde otro equipo de la misma red** (por ejemplo, la laptop del frontend): `http://<IP-de-esta-laptop>:8000`.
+- **Solo verificar, sin levantar el servidor:** `demo.bat --check`.
+
+**Requisitos (una vez, con internet):**
+- `pip install -e ".[dev,spherex]"`.
+- Las efemérides en `data/ephemeris/`.
+- Los campos preparados en `data/analysis/fields/`. Vienen en el *data bundle*; ver `docs/DEPLOY.md`.
+
+**Límites:**
+- En este modo, `POST /custom` solo devuelve los campos precalculados (`/data/custom/presets.json`). Para coordenadas nuevas responde 503, porque generarlas requiere IRSA.
+- Los mosaicos de Mars Trek que use el frontend vienen de servidores de NASA y también necesitan internet.

@@ -17,9 +17,11 @@ from analysis.field_spectrum import (FieldNotFound, FieldNotPrepared, list_field
                                      spectrum_in_field)
 from pipeline.custom import get_status, submit_custom  # noqa: E402
 from pipeline.targets import (CUSTOM_FOV_DEFAULT, CUSTOM_FOV_MAX, CUSTOM_MAX_PER_GROUP_DEFAULT,  # noqa: E402
-                              CUSTOM_MAX_PER_GROUP_LIMIT)
+                              CUSTOM_MAX_PER_GROUP_LIMIT, custom_spec)
 
 PUBLIC_DATA_DIR = REPO_ROOT / "public-data"
+# Demo mode without internet (python -m app.demo): only cached custom fields are served.
+OFFLINE = os.environ.get("RDA_OFFLINE", "").lower() in ("1", "true", "yes")
 STATIC_PREFIX = "/data"
 
 router = APIRouter(tags=["spherex"])
@@ -44,6 +46,10 @@ def create_custom(req: CustomRequest) -> dict:
     """Lanza el trabajo en segundo plano y responde al instante con su estado.
     Si el campo ya existe, responde `state: ready` (caché)."""
     try:
+        if OFFLINE and not (custom_spec(req.ra, req.dec, req.fov_arcmin, req.max_exposures_per_group).public_dir
+                            / "manifest.json").exists():
+            raise HTTPException(status_code=503, detail="offline demo mode: only precomputed fields are available "
+                                                        "(see /data/custom/presets.json)")
         status = submit_custom(req.ra, req.dec, req.fov_arcmin, req.max_exposures_per_group)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc

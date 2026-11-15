@@ -57,3 +57,28 @@ def test_spectrum_in_prepared_field():
 def test_spectrum_errors():
     assert client.get("/spectrum", params={"field": "nope", "ra": 1, "dec": 1}).status_code == 404
     assert client.get("/spectrum", params={"field": "eps_ind_b", "ra": 10, "dec": 10}).status_code == 422
+
+
+def test_offline_mode_rejects_uncached_custom(monkeypatch):
+    import app.spherex as sx
+    monkeypatch.setattr(sx, "OFFLINE", True)
+    assert client.post("/custom", json={"ra": 10.123, "dec": 20.456}).status_code == 503
+    p = PRESETS[0]  # cached presets still work offline
+    r = client.post("/custom", json={"ra": p["ra"], "dec": p["dec"], "fov_arcmin": p["fov_arcmin"]})
+    assert r.status_code == 202 and r.json()["state"] == "ready"
+
+
+def test_demo_network_blocker_really_blocks():
+    import socket
+    from app import demo
+    saved = socket.socket.connect, socket.create_connection
+    try:
+        demo.block_network()
+        with pytest.raises(OSError, match="demo offline"):
+            socket.create_connection(("irsa.ipac.caltech.edu", 443), timeout=2)
+        s = socket.socket()
+        with pytest.raises(OSError, match="demo offline"):
+            s.connect(("8.8.8.8", 53))
+        s.close()
+    finally:
+        socket.socket.connect, socket.create_connection = saved
