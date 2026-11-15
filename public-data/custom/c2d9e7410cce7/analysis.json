@@ -1323,7 +1323,8 @@
      "n_ref": 2,
      "widened": true,
      "absorption_sigma": 0.7,
-     "significant": false
+     "significant": false,
+     "interpretation": "Brown-dwarf indices: for a star or young stellar object they mostly trace the continuum slope (e.g. warm dust), not CH4/H2O gas."
     },
     {
      "name": "H2O-H",
@@ -1344,7 +1345,8 @@
      "n_ref": 2,
      "widened": true,
      "absorption_sigma": 2.4,
-     "significant": false
+     "significant": false,
+     "interpretation": "Brown-dwarf indices: for a star or young stellar object they mostly trace the continuum slope (e.g. warm dust), not CH4/H2O gas."
     },
     {
      "name": "CH4-H",
@@ -1365,7 +1367,8 @@
      "n_ref": 2,
      "widened": true,
      "absorption_sigma": -2.0,
-     "significant": false
+     "significant": false,
+     "interpretation": "Brown-dwarf indices: for a star or young stellar object they mostly trace the continuum slope (e.g. warm dust), not CH4/H2O gas."
     },
     {
      "name": "H2O-K",
@@ -1383,7 +1386,8 @@
      "value": null,
      "err": null,
      "note": "no data in window",
-     "significant": false
+     "significant": false,
+     "interpretation": "Brown-dwarf indices: for a star or young stellar object they mostly trace the continuum slope (e.g. warm dust), not CH4/H2O gas."
     },
     {
      "name": "CH4-K",
@@ -1401,7 +1405,8 @@
      "value": null,
      "err": null,
      "note": "no data in window",
-     "significant": false
+     "significant": false,
+     "interpretation": "Brown-dwarf indices: for a star or young stellar object they mostly trace the continuum slope (e.g. warm dust), not CH4/H2O gas."
     },
     {
      "name": "CH4-3.3",
@@ -1419,7 +1424,8 @@
      "value": null,
      "err": null,
      "note": "no data in window",
-     "significant": false
+     "significant": false,
+     "interpretation": "Brown-dwarf indices: for a star or young stellar object they mostly trace the continuum slope (e.g. warm dust), not CH4/H2O gas."
     },
     {
      "name": "H2O ice 3.05",
@@ -1442,7 +1448,8 @@
      "value": null,
      "err": null,
      "note": "no data in band or continuum windows",
-     "significant": false
+     "significant": false,
+     "interpretation": "Ice absorption depth against a log-log continuum; significant only if >= 3 sigma."
     },
     {
      "name": "CO2 ice 4.27",
@@ -1465,7 +1472,8 @@
      "value": null,
      "err": null,
      "note": "no data in band or continuum windows",
-     "significant": false
+     "significant": false,
+     "interpretation": "Ice absorption depth against a log-log continuum; significant only if >= 3 sigma."
     },
     {
      "name": "CO 4.67",
@@ -1488,7 +1496,8 @@
      "value": null,
      "err": null,
      "note": "no data in band or continuum windows",
-     "significant": false
+     "significant": false,
+     "interpretation": "Ice absorption depth against a log-log continuum; significant only if >= 3 sigma."
     }
    ]
   }
@@ -1606,5 +1615,5 @@
   }
  ],
  "notes": "Forced spectrophotometry at BN/KL (Becklin-Neugebauer) (RA 83.80880, Dec -5.37298) from 122 exposures (up to 10 per epoch x detector). Aperture r = 12\" with a 31-49\" annulus: in a bright nebula the local background is structured, so absolute fluxes carry extra uncertainty. Saturated points are lower limits.",
- "generated_at": "2026-11-15T00:50:46+00:00"
+ "generated_at": "2026-11-15T01:23:49+00:00"
 }

@@ -139,6 +139,9 @@ INTERPRETATION = {
     "brown_dwarf": {"depth": "In a brown dwarf this window traces gas-phase absorption (CH4/H2O/CO), not ice."},
     "high_proper_motion_star": {"ratio": "M dwarf: no methane expected (control).",
                                 "depth": "Stellar photosphere: no ice expected (control)."},
+    "custom": {"ratio": "Brown-dwarf indices: for a star or young stellar object they mostly trace the continuum "
+                        "slope (e.g. warm dust), not CH4/H2O gas.",
+               "depth": "Ice absorption depth against a log-log continuum; significant only if >= 3 sigma."},
     "variable_star": {"ratio": "Not a brown dwarf: indices are reported for completeness only.",
                       "depth": "Circumstellar dust/ice possible in young stars; check per-epoch spectra."},
 }

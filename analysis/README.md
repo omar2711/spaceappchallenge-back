@@ -70,6 +70,12 @@ Requisitos:
 - **`band_measurements[]`** (solo en el combinado): `name`, `type` (`ratio` o `depth`), `value ± err`, `absorption_sigma`, `significant` (≥ 3σ) e `interpretation` (por ejemplo, que en una enana marrón la ventana "de hielo" mide gas).
 - **`reference_bands[]`:** marcadores para el gráfico (`label`, `wavelength_um`, `range_um`, `source`, `verified`). **No son detecciones.**
 
+### Catálogo SPLICES — T4
+
+`python -m analysis.splices` genera `public-data/catalogs/splices.json`: 2 293 candidatas a hielo alrededor de nuestros campos, más 303 protoestrellas brillantes de todo el cielo.
+- Formato compacto: `columns` + `rows`.
+- **No son detecciones de hielo.** Ver `docs/analysis_t3_t4.md`.
+
 ### Espectro en coordenadas libres (base de T5)
 
 ```

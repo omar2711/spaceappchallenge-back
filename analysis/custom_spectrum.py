@@ -26,7 +26,7 @@ from pipeline.targets import PUBLIC_ROOT, custom_spec
 log = logging.getLogger("analysis.custom_spectrum")
 
 
-def spectrum_for_coords(ra, dec, label=None, max_per_group=10, fov_arcmin=2.0, workers=4, kind=None):
+def spectrum_for_coords(ra, dec, label=None, max_per_group=10, fov_arcmin=2.0, workers=4, kind="custom"):
     """Per-epoch + combined spectra at (ra, dec). Raw cutouts are kept in data/raw/custom/<id> as a cache."""
     spec = custom_spec(ra, dec, fov_arcmin, max_per_group)
     fetch_spec(spec, workers=workers, max_per_group=max_per_group)
