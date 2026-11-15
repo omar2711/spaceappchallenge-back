@@ -1,0 +1,59 @@
+{
+  "name": "3I/ATLAS",
+  "type": "interstellar comet (third known interstellar object)",
+  "processed_by_us": false,
+  "note": "Metadata and links only: we did not process these images. IRSA warns the comet is spatially extended at SPHEREx resolution and has low S/N at many wavelengths, and does not recommend the SPHEREx Spectrophotometry Tool for it.",
+  "spherex_observations": {
+    "summary": "SPHEREx observed 3I/ATLAS in August and December 2025 (pre- and post-perihelion).",
+    "periods": [
+      {"label": "Aug 2025 (pre-perihelion)", "survey_weeks": ["2025W31", "2025W32", "2025W33"], "n_spectral_images": 161},
+      {"label": "Dec 2025 (post-perihelion)", "survey_weeks": ["2025W50"], "n_spectral_images": 98}
+    ],
+    "n_spectral_images_total": 259,
+    "count_source": "file list of IRSA's download script (3IATLASImages-wget.sh, dated 2026-01-14)"
+  },
+  "irsa": {
+    "page": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/comet3iatlas/index.html",
+    "observation_table_votable": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/comet3iatlas/obscore_3I_Atlas.vot",
+    "observation_table_note": "One row per spectral image: access URL, predicted comet position for the exposure (comet_ra, comet_dec) and other metadata. Can be uploaded into the IRSA Viewer.",
+    "download_scripts": {
+      "wget": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/comet3iatlas/3IATLASImages-wget.sh",
+      "curl": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/comet3iatlas/3IATLASImages-curl.sh"
+    },
+    "irsa_viewer": "https://irsa.ipac.caltech.edu/irsaviewer/"
+  },
+  "spherex_results": [
+    {
+      "title": "SPHEREx Discovery of Strong Water Ice Absorption and an Extended Carbon Dioxide Coma in 3I/ATLAS",
+      "reference": "Lisse et al. 2025, RNAAS 9, 242 (August 2025 data)",
+      "url": "https://ui.adsabs.harvard.edu/abs/2025RNAAS...9..242L/abstract",
+      "highlights": [
+        "Strong water-ice absorption in the 1.5-4.0 um continuum, similar to Kuiper Belt objects and distant comets.",
+        "Extended CO2 gas coma, at least ~348,000 km across in the first analysis (SPHEREx news release)."
+      ]
+    },
+    {
+      "title": "SPHEREx Pre-Perihelion Mapping of H2O, CO2, and CO in Interstellar Object 3I/ATLAS",
+      "reference": "Lisse et al., ApJ Letters 2026 (arXiv:2512.07318), August 2025 data",
+      "url": "https://ui.adsabs.harvard.edu/abs/2025arXiv251207318L/abstract",
+      "highlights": [
+        "Robust H2O gas emission at 2.7-2.8 um and CO2 at 4.23-4.27 um; tentative 13CO2 and CO.",
+        "CO2 atmosphere extending to at least ~420,000 km.",
+        "Production rates Q(H2O) ~ 3.2e26 and Q(CO2) ~ 1.6e27 molecules/s (as quoted from the abstract).",
+        "Interpretation: a CO2-rich, CO-poor, thermally processed object, closer to 1I/'Oumuamua than to 2I/Borisov."
+      ]
+    },
+    {
+      "title": "SPHEREx Re-Observation of Interstellar Object 3I/ATLAS in December 2025: Detection of Increased Post-Perihelion Activity, Refractory Coma Dust, and New Coma Gas Species",
+      "reference": "Lisse et al. 2026 (arXiv:2601.06759), December 2025 data",
+      "url": "https://ui.adsabs.harvard.edu/abs/2026arXiv260106759L/abstract",
+      "highlights": ["Much more active after perihelion: refractory dust in the coma and new gas species."]
+    }
+  ],
+  "news": [
+    {"title": "SPHEREx: 3I/ATLAS CO2 coma", "url": "https://spherex.caltech.edu/news/3i-atlas-co2-coma"}
+  ],
+  "ruta_del_agua": "Water from outside the Solar System: SPHEREx saw water ice and water vapour, and a large carbon dioxide coma, in a comet that formed around another star.",
+  "sources_checked": "2026-11-14: IRSA 3I/ATLAS page, SPHEREx news release, ADS/arXiv abstracts. Numbers are quoted, not re-derived.",
+  "generated_at": "2026-11-14"
+}
