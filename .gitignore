@@ -33,5 +33,9 @@ Desktop.ini
 !.vscode/extensions.json
 .idea/
 
-# Fields generated on demand by the API (pipeline/custom.py)
-public-data/custom/
+# Fields generated on demand by the API (pipeline/custom.py); only the demo presets are versioned
+public-data/custom/*
+!public-data/custom/presets.json
+!public-data/custom/cd2f34edd4880/
+!public-data/custom/c849cdb29dee1/
+!public-data/custom/c2d9e7410cce7/

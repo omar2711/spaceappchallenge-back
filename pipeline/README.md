@@ -24,15 +24,15 @@ El enunciado pide que el usuario ingrese RA/Dec y vea la serie de imágenes. `bu
 ```python
 from pipeline.custom import submit_custom, get_status, build_for_coords
 
-st = submit_custom(ra=67.9101, dec=18.2328, fov_arcmin=3, max_exposures_per_group=6)  # vuelve enseguida
+st = submit_custom(ra=67.9105, dec=18.2327)        # fov 3', 2 exposiciones por grupo; vuelve enseguida
 st = get_status(st["job_id"])                                                           # consultar cada ~2 s
 # cuando st["state"] == "ready": servir public-data/ + st["manifest"]  ("custom/<job_id>/manifest.json")
 ```
 
-### `submit_custom(ra, dec, fov_arcmin=3, max_exposures_per_group=6)`
+### `submit_custom(ra, dec, fov_arcmin=3, max_exposures_per_group=2)`
 
 - Lanza el trabajo en segundo plano y devuelve el estado inicial al instante.
-- **Validación:** `ra` en [0, 360), `dec` en [−90, 90], `fov_arcmin` en (0, 6] (por defecto 3) y `max_exposures_per_group` en [1, 30] (por defecto 6). Con otros valores lanza `ValueError`; la API debería responder 422.
+- **Validación:** `ra` en [0, 360), `dec` en [−90, 90], `fov_arcmin` en (0, 6] (por defecto 3) y `max_exposures_per_group` en [1, 30] (por defecto **2**, decisión del equipo para respuestas de ~2–3 min). Con otros valores lanza `ValueError`; la API debería responder 422.
 - **`job_id`:** es un hash de `(ra, dec, fov, max)` redondeados (0.36"). La misma consulta siempre da el mismo `job_id`:
   - Si el resultado ya existe, devuelve `state: "ready"` sin recalcular (caché).
   - Si ya está en cola o en proceso, devuelve el estado actual sin duplicar el trabajo.
@@ -79,7 +79,7 @@ Devuelve `None` si el `job_id` no existe. Si no, un dict persistido en `data/job
 | `interrupted` | El servidor se reinició a mitad del trabajo; hay que volver a llamar a `submit_custom` |
 | Nombre de la excepción | Cualquier otro fallo |
 
-### `build_for_coords(ra, dec, fov_arcmin=3, max_exposures_per_group=6, progress=None, keep_raw=False)`
+### `build_for_coords(ra, dec, fov_arcmin=3, max_exposures_per_group=2, progress=None, keep_raw=False)`
 
 - Es la versión **bloqueante**: devuelve `{"job_id", "manifest", "cached", "epochs", "frames", ...}`.
 - Sirve para scripts y precálculo.
@@ -105,7 +105,8 @@ Para borrar un trabajo completo: `clear_custom(job_id)`.
 
 ### Rendimiento
 
-- **Tiempo:** dominado por la descarga. Con la configuración por defecto son ~108 recortes, ~430 MB. La medición real está en `docs/pipeline_estado.md`.
+- **Tiempo:** dominado por la descarga. Con 2 por grupo son ~36 recortes, ~145 MB. Las mediciones reales están en `docs/pipeline_estado.md`.
+- **¿Por qué cada recorte pesa ~4 MB?** El servicio de recortes de IRSA (IBE) solo acepta `center`, `size` y `gzip`. Para SPHEREx siempre devuelve el MEF completo, incluida la tabla PSF (EPSF, ~3.9 MB), y no se puede pedir menos extensiones. `gzip=true` funciona, pero solo ahorra ~7 % (4.06 → 3.79 MB), así que no se usa. Ver <https://irsa.ipac.caltech.edu/ibe/cutouts.html>.
 - **Memoria:** acotada. Se procesa grupo por grupo (pasada × detector), y solo un grupo de imágenes de 31×31 a 59×59 px está en memoria a la vez.
 
 ## Para B3 (API) y el frontend: `public-data/targets/`
