@@ -44,6 +44,7 @@ URLs:
 - API: <http://127.0.0.1:8000>
 - Documentación: <http://127.0.0.1:8000/docs>
 - Salud: <http://127.0.0.1:8000/health>
+- Readiness: <http://127.0.0.1:8000/health/ready>
 
 Endpoints de datos:
 
@@ -63,6 +64,12 @@ Endpoints de datos:
 
 Para permitir otro origen del frontend, define `API_CORS_ORIGINS` como una lista separada
 por comas, por ejemplo `https://frontend.example,http://localhost:5173`.
+
+### Despliegue en Render
+
+El archivo [render.yaml](render.yaml) define el servicio. En Render configura
+`API_CORS_ORIGINS` con el dominio público del frontend y usa `/health/ready` como
+comprobación de disponibilidad.
 
 Detener el servidor con `Ctrl+C`.
 

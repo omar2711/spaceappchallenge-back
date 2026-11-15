@@ -13,6 +13,21 @@ def test_health() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_root_reports_api_version() -> None:
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert response.json()["version"] == "1.0.0"
+
+
+def test_readiness_reports_required_public_data() -> None:
+    response = client.get("/health/ready")
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "ready"
+    assert all(response.json()["checks"].values())
+
+
 def test_list_targets_contains_all_official_targets() -> None:
     response = client.get("/api/v1/targets")
 
@@ -55,6 +70,20 @@ def test_published_data_does_not_allow_path_traversal() -> None:
     response = client.get("/data/../pyproject.toml")
 
     assert response.status_code == 404
+
+
+def test_custom_presets_are_available() -> None:
+    response = client.get("/api/v1/custom/presets")
+
+    assert response.status_code == 200
+    assert len(response.json()["presets"]) >= 3
+
+
+def test_published_moon_data_is_served() -> None:
+    response = client.get("/data/moon/sites.json")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/json"
 
 
 def test_create_custom_field_enqueues_valid_request(monkeypatch) -> None:
@@ -189,3 +218,17 @@ def test_3i_atlas_declares_ephemeris_status() -> None:
     body = response.json()
     assert body["id"] == "3i-atlas"
     assert body["ephemeris"]["available"] is False
+
+
+def test_cors_allows_custom_post_from_frontend() -> None:
+    response = client.options(
+        "/api/v1/custom",
+        headers={
+            "Origin": "http://localhost:5173",
+            "Access-Control-Request-Method": "POST",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+    assert "POST" in response.headers["access-control-allow-methods"]

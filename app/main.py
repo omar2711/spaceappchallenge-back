@@ -168,14 +168,14 @@ def _lunar_site_conditions(site: dict[str, Any], observed_at: datetime) -> dict[
 app = FastAPI(
     title="Ruta del Agua API",
     description="API para la experiencia Planet X SPHEREx de Space Apps Cochabamba.",
-    version="0.2.0",
+    version="1.0.0",
 )
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins(),
     allow_credentials=False,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -207,6 +207,23 @@ def read_root() -> dict[str, str]:
 def health_check() -> dict[str, str]:
     """Comprueba que el servicio está disponible."""
     return {"status": "ok"}
+
+
+@app.get("/health/ready", tags=["system"])
+def readiness_check() -> dict[str, Any]:
+    """Comprueba que los artefactos públicos mínimos están disponibles."""
+    required_files = {
+        "targets": TARGET_INDEX_PATH,
+        "custom_presets": CUSTOM_PRESETS_PATH,
+        "moon_sites": MOON_SITES_PATH,
+        "mars_route": MARS_ROUTE_PATH,
+        "ice_catalog": ICE_CATALOG_PATH,
+        "3i_atlas": COMET_PATH,
+    }
+    checks = {name: path.is_file() for name, path in required_files.items()}
+    if not all(checks.values()):
+        raise HTTPException(status_code=503, detail={"status": "not_ready", "checks": checks})
+    return {"status": "ready", "checks": checks}
 
 
 @app.get("/api/v1/targets", tags=["targets"])
