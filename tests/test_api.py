@@ -112,3 +112,23 @@ def test_get_custom_field_status_rejects_invalid_job_id() -> None:
     response = client.get("/api/v1/custom/not-a-job")
 
     assert response.status_code == 422
+
+
+def test_cochabamba_visibility_returns_observation_details() -> None:
+    response = client.get(
+        "/api/v1/visibility/cochabamba/barnard",
+        params={"at": "2026-11-15T04:00:00Z"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["target_id"] == "barnard"
+    assert body["location"]["name"] == "Cochabamba"
+    assert "altitude_deg" in body["target"]
+    assert body["reason"] in {"daylight", "target_below_20_degrees", "visible"}
+
+
+def test_cochabamba_visibility_rejects_unknown_target() -> None:
+    response = client.get("/api/v1/visibility/cochabamba/not-a-target")
+
+    assert response.status_code == 404

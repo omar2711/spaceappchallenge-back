@@ -4,15 +4,20 @@ import json
 import mimetypes
 import os
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+import astropy.units as u
+from astropy.coordinates import AltAz, EarthLocation, get_sun
+from astropy.time import Time
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from pipeline.custom import get_status, submit_custom
+from pipeline.targets import position_at
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -21,6 +26,13 @@ TARGETS_ROOT = PUBLIC_DATA_ROOT / "targets"
 TARGET_INDEX_PATH = TARGETS_ROOT / "index.json"
 CUSTOM_PRESETS_PATH = PUBLIC_DATA_ROOT / "custom" / "presets.json"
 JOB_ID_PATTERN = re.compile(r"^c[a-f0-9]{12}$")
+COCHABAMBA = EarthLocation.from_geodetic(
+    lon=-66.157 * u.deg,
+    lat=-17.3935 * u.deg,
+    height=2_570 * u.m,
+)
+VISIBLE_ALTITUDE_DEG = 20.0
+ASTRONOMICAL_NIGHT_ALTITUDE_DEG = -18.0
 
 
 class CustomFieldRequest(BaseModel):
@@ -75,6 +87,19 @@ def _cors_origins() -> list[str]:
 def _validate_job_id(job_id: str) -> None:
     if not JOB_ID_PATTERN.fullmatch(job_id):
         raise HTTPException(status_code=422, detail="Invalid custom job id")
+
+
+def _observation_time(value: datetime | None) -> datetime:
+    observed_at = value or datetime.now(timezone.utc)
+    if observed_at.tzinfo is None:
+        return observed_at.replace(tzinfo=timezone.utc)
+    return observed_at.astimezone(timezone.utc)
+
+
+def _altitude_azimuth(coord, observed_at: datetime) -> tuple[float, float]:
+    frame = AltAz(obstime=Time(observed_at), location=COCHABAMBA)
+    horizontal = coord.transform_to(frame)
+    return float(horizontal.alt.deg), float(horizontal.az.deg)
 
 
 app = FastAPI(
@@ -172,3 +197,50 @@ def get_custom_field_status(job_id: str) -> dict[str, Any]:
     if status is None:
         raise HTTPException(status_code=404, detail=f"Unknown custom job: {job_id}")
     return status
+
+
+@app.get("/api/v1/visibility/cochabamba/{target_id}", tags=["visibility"])
+def get_cochabamba_visibility(
+    target_id: str,
+    at: datetime | None = Query(default=None, description="UTC date and time; defaults to now"),
+) -> dict[str, Any]:
+    """Calcula si un objetivo está visible desde Cochabamba en una fecha dada."""
+    _target_entry(target_id)
+    observed_at = _observation_time(at)
+    try:
+        target_coord = position_at(target_id, observed_at)
+        target_altitude, target_azimuth = _altitude_azimuth(target_coord, observed_at)
+        sun_altitude, _ = _altitude_azimuth(get_sun(Time(observed_at)), observed_at)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=f"Invalid observation time: {exc}") from exc
+
+    is_night = sun_altitude <= ASTRONOMICAL_NIGHT_ALTITUDE_DEG
+    above_horizon = target_altitude >= VISIBLE_ALTITUDE_DEG
+    visible = is_night and above_horizon
+    if not is_night:
+        reason = "daylight"
+    elif not above_horizon:
+        reason = "target_below_20_degrees"
+    else:
+        reason = "visible"
+    return {
+        "target_id": target_id,
+        "observed_at": observed_at.isoformat(),
+        "location": {
+            "name": "Cochabamba",
+            "latitude_deg": -17.3935,
+            "longitude_deg": -66.157,
+            "elevation_m": 2570,
+        },
+        "target": {
+            "altitude_deg": round(target_altitude, 3),
+            "azimuth_deg": round(target_azimuth, 3),
+            "above_horizon": above_horizon,
+        },
+        "sun": {
+            "altitude_deg": round(sun_altitude, 3),
+            "astronomical_night": is_night,
+        },
+        "visible": visible,
+        "reason": reason,
+    }
