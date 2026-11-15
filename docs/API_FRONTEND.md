@@ -56,7 +56,7 @@ Response `202`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:45:47+00:00",
+  "updated_at": "2026-11-15T02:46:14+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -86,7 +86,7 @@ Response `200`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:45:47+00:00",
+  "updated_at": "2026-11-15T02:46:14+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -538,6 +538,89 @@ Response `200`:
     "... (+389 más)"
   ],
   "generated_at": "2026-11-15T02:40:06+00:00"
+}
+```
+
+### Visibilidad desde Cochabamba: `GET /visibility`
+
+Noche que empieza en `date` (hora local UTC-4; por defecto hoy): `sun` (atardecer, amanecer, inicio/fin de la noche con el Sol bajo −12°), `target_events` (salida, puesta, culminación), `best_time` (máxima altura de noche, con la altura de la Luna), `observable` (altura > 20° de noche) y `observable_hours`. `curve`: altura cada 5 min para graficar. Sitio: 17.388°S, 66.160°W, ~2 550 m. Altura geométrica (sin refracción).
+
+Request:
+
+```http
+GET /visibility?ra=83.8221&dec=-5.3911&date=2026-11-14
+```
+
+Response `200`:
+
+```json
+{
+  "site": {
+    "name": "Cochabamba, Bolivia",
+    "lat": -17.38833,
+    "lon": -66.15972,
+    "elevation_m": 2550,
+    "utc_offset_hours": -4,
+    "source": "Wikipedia (17°23'18\"S 66°09'35\"W); elevation ~2,550 m (2,537-2,577 m across GeoNames/WorldAtlas)"
+  },
+  "target": {
+    "ra_deg": 83.8221,
+    "dec_deg": -5.3911
+  },
+  "date_local": "2026-11-14",
+  "window_local": [
+    "2026-11-14T12:00",
+    "2026-11-15T12:00"
+  ],
+  "sun": {
+    "sunset": "2026-11-14T18:33",
+    "sunrise": "2026-11-15T05:45",
+    "night_start": "2026-11-14T19:27",
+    "night_end": "2026-11-15T04:51",
+    "night_definition": "Sun below -12.0 deg"
+  },
+  "target_events": {
+    "rise": "2026-11-14T20:18",
+    "set": "2026-11-15T08:29",
+    "culmination": "2026-11-15T02:25",
+    "culmination_alt_deg": 77.98,
+    "always_up": false,
+    "never_up": false
+  },
+  "best_time": {
+    "time": "2026-11-15T02:25",
+    "alt_deg": 77.98,
+    "az_deg": 358.6,
+    "moon_alt_deg": -36.9
+  },
+  "observable": true,
+  "observable_hours": 7.17,
+  "criterion": "altitude > 20.0 deg while the Sun is below -12.0 deg",
+  "moon_illuminated_fraction": 0.286,
+  "curve": {
+    "step_min": 5,
+    "time_local": [
+      "2026-11-14T12:00",
+      "2026-11-14T12:05",
+      "... (+287 más)"
+    ],
+    "alt_deg": [
+      -47.33,
+      -48.37,
+      "... (+287 más)"
+    ],
+    "az_deg": [
+      241.0,
+      240.0,
+      "... (+287 más)"
+    ],
+    "sun_alt_deg": [
+      87.64,
+      88.64,
+      "... (+287 más)"
+    ]
+  },
+  "notes": "Geometric altitude (no refraction, ~0.5 deg at the horizon). Local time UTC-4."
 }
 ```
 

@@ -48,3 +48,12 @@ def test_gaia_fields_and_barnard_motion():
     ys = [b["epochs"][e]["px"][1] for e in ("S1", "S2", "S3")]
     assert ys[0] > ys[1] > ys[2]  # moving north = up in WebP coordinates
     assert client.get("/gaia", params={"field": "nope"}).status_code == 404
+
+
+def test_cochabamba_visibility():
+    m42 = client.get("/visibility", params={"ra": 83.8221, "dec": -5.3911, "date": "2026-11-14"}).json()
+    assert m42["observable"] and abs(m42["target_events"]["culmination_alt_deg"] - 78.0) < 0.5  # 90-|lat-dec|
+    rdra = client.get("/visibility", params={"ra": 248.1676, "dec": 66.755, "date": "2026-11-14"}).json()
+    assert not rdra["observable"] and rdra["target_events"]["culmination_alt_deg"] < 6.5
+    assert client.get("/visibility", params={"ra": 10, "dec": 10, "date": "14/11/2026"}).status_code == 422
+    assert client.get("/visibility", params={"ra": 10, "dec": 100}).status_code == 422

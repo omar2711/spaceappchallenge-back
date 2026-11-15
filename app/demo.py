@@ -31,6 +31,7 @@ DEMO_CHECKS = [
     ("GET", "/moon/sites", None),
     ("GET", "/gaia", {"field": "barnard"}),
     ("GET", "/gaia", {"field": "m42"}),
+    ("GET", "/visibility", {"ra": 83.8221, "dec": -5.3911, "date": "2026-11-14"}),
     ("GET", "/moon/visibility", {"site": "haworth", "start": "2026-12-01", "days": 30, "step_min": 10}),
 ]
 

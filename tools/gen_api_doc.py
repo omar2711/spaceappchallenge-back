@@ -65,6 +65,14 @@ ENDPOINTS += [
      "ordenada por brillo. 404 si el campo no existe."),
 ]
 
+ENDPOINTS += [
+    ("GET", "/visibility", {"ra": 83.8221, "dec": -5.3911, "date": "2026-11-14"}, "Visibilidad desde Cochabamba",
+     "Noche que empieza en `date` (hora local UTC-4; por defecto hoy): `sun` (atardecer, amanecer, inicio/fin de la "
+     "noche con el Sol bajo −12°), `target_events` (salida, puesta, culminación), `best_time` (máxima altura de noche, "
+     "con la altura de la Luna), `observable` (altura > 20° de noche) y `observable_hours`. `curve`: altura cada 5 min "
+     "para graficar. Sitio: 17.388°S, 66.160°W, ~2 550 m. Altura geométrica (sin refracción)."),
+]
+
 # (url path, title, description)
 STATIC = [
     ("/data/targets/index.json", "Índice de los 5 objetivos", "Lista de objetivos con su `manifest`."),
