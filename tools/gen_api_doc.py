@@ -132,8 +132,11 @@ def main():
         "> Generado con `python tools/gen_api_doc.py` llamando a la API real: los ejemplos son respuestas reales "
         "(listas recortadas a 2 elementos). No editar a mano: actualizar el script y regenerar.",
         "",
-        "- **Base URL local (modo demo):** `http://localhost:8000`",
-        "- **Base URL pública:** Render, ver `docs/DEPLOY.md` (plan gratuito: la primera petición tras 15 min sin uso tarda ~30–60 s; llamar antes a `/health`)",
+        "- **Base URL pública:** `https://ruta-del-agua-api.onrender.com` (Render, plan gratuito: tras 15 min sin uso "
+        "se duerme y la primera petición tarda ~30–60 s; llamar antes a `/health`). Ver `docs/DEPLOY.md`.",
+        "- **Base URL local (modo demo sin internet):** `http://localhost:8000` (`demo.bat`).",
+        "- **Ejemplo:** `https://ruta-del-agua-api.onrender.com/data/targets/index.json`, "
+        "`https://ruta-del-agua-api.onrender.com/moon/visibility?site=haworth&start=2026-12-01`.",
         "- **Documentación interactiva:** `GET /docs` (Swagger) y `GET /openapi.json`.",
         "- **CORS:** abierto (`*`). Archivos estáticos bajo `/data/...` (la carpeta `public-data/` del repo).",
         "- **Convención de imágenes:** los WebP tienen origen arriba a la izquierda; `target_px` = `[x, y]` en esa "

@@ -60,3 +60,26 @@ El plan gratuito **se duerme tras 15 minutos sin tráfico**, y la primera petici
 | 512 MB de RAM | La API usa ~200 MB en reposo y un campo nuevo de `/custom` suma ~140 MB. Se procesa un trabajo a la vez |
 | Disco efímero | Los campos que se generen con `/custom` se pierden en cada redespliegue o reinicio. Los presets y los 5 objetivos vienen en la imagen |
 | CPU compartida | `/custom` puede tardar más que en local (~3–5 min por campo) |
+
+## Verificación del despliegue (2026-11-14, 23:30)
+
+URL: **https://ruta-del-agua-api.onrender.com**. Se repite con:
+```
+.venv\Scripts\python tools\verify_deploy.py https://ruta-del-agua-api.onrender.com [--custom]
+```
+
+**Resultado: 32 de 32 verificaciones OK.** Todas devuelven el código esperado, el tipo de contenido correcto (`image/webp` en los WebP) y CORS `*`.
+
+| Endpoint | Tiempo |
+|---|---|
+| `/health`, `/fields`, `/moon/sites`, `/gaia`, `/mars/marswalk`, `/custom` (caché) y todos los estáticos `/data/...` | 0.23–0.30 s |
+| `/visibility` (Cochabamba) | 0.7 s |
+| `/moon/visibility`, 30 días cada 10 min | 1.0 s |
+| `/spectrum` en campos chicos (presets, ~36 exposiciones) | 0.35–0.7 s |
+| `/spectrum` en campos grandes (eps Ind B, 458 exposiciones; Barnard, 358) | 6.0 s la primera vez y ~3.3–4.3 s después. La CPU del plan gratuito es ~4 veces más lenta que en local, donde tarda ~1 s |
+| **`POST /custom` con una coordenada nueva** (COSMOS, 150.1 / +2.2, 2', 1 por grupo) | **Listo en 31 s** desde Render, que llega bien a IRSA. Su WebP se sirve y `/spectrum` sobre ese campo funciona (preparación automática; 0.36 s en caliente) |
+
+**Valores científicos** (iguales a los de local):
+- Sol desde Apollo 11 el 2026-11-15 a las 00:00 UTC: −0.977°, igual que JPL Horizons.
+- M42 desde Cochabamba culmina a 77.98°.
+- Los 8 campos están preparados para `/spectrum`.
