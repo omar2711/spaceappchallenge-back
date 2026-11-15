@@ -19,7 +19,7 @@ Cualquier RA/Dec genera el mismo `manifest.json` + WebP que los 5 objetivos, en 
 - Para la API: `submit_custom(...)` y `get_status(job_id)`, que lanzan el trabajo en segundo plano y devuelven su estado.
 - Versión bloqueante: `build_for_coords(...)`.
 - El contrato está en `pipeline/README.md`.
-- **Límites:** campo de 3' por defecto (máximo 6'); 6 exposiciones por pasada × detector por defecto (máximo 30); un trabajo a la vez por proceso.
+- **Límites:** campo de 3' por defecto (máximo 6'); **2 exposiciones por pasada × detector por defecto** (decisión del equipo; máximo 30); un trabajo a la vez por proceso.
 - **Caché:** el `job_id` es un hash de `(ra, dec, fov, max)` redondeados, así que repetir una consulta no recalcula nada.
 
 **Mediciones** (conexión doméstica, 2026-11-14):
@@ -29,13 +29,22 @@ Cualquier RA/Dec genera el mismo `manifest.json` + WebP que los 5 objetivos, en 
 | HL Tau (67.9101, +18.2328), 3', 6/grupo, 108 recortes | **613 s** (consulta 17 s, **descarga 588 s**, suma y export ~8 s) | **138 MB** | 3 pasadas, 18 frames |
 | Trapecio de Orión (83.8221, −5.3911), 2', 1/grupo, 18 recortes, en segundo plano | 96 s | — | 3 pasadas, 18 frames |
 | Repetir HL Tau (caché) | 2.9 s (casi todo es importar librerías) | — | sin recálculo |
+| **Por defecto de la API** (2 por grupo, 36 recortes): HL Tau 3' | **174 s** | 136 MB | 3 pasadas, 18 frames |
+| Por defecto: Trapecio (θ¹ Ori C) 3' | **190 s** | 137 MB | 3 pasadas, 18 frames |
+| Por defecto: M42 4' | **218 s** | 138 MB | 3 pasadas, 18 frames |
+
+**Demo precalculada:** `public-data/custom/presets.json` lista HL Tau, el Trapecio y M42, con las `ra`, `dec`, `fov_arcmin` y `max_exposures_per_group` exactas que dan acierto de caché.
+- Esos 3 campos sí están versionados; el resto de `public-data/custom/` no.
+- En Orión, el objeto infrarrojo BN/KL aparece a 2.5–5 µm (D4–D6).
+
+**¿Se puede evitar la tabla PSF?** No. El servicio IBE solo acepta `center`, `size` y `gzip`, y para SPHEREx devuelve siempre todas las extensiones. `gzip=true` solo ahorra 7 % (4.06 → 3.79 MB) y no se usa.
 
 **El cuello de botella es la descarga.** Cada recorte pesa ~4 MB por la tabla PSF (EPSF), aunque la imagen sea pequeña, e IRSA devuelve 503 bajo carga. Para respuestas rápidas en la demo:
 - usar `max_exposures_per_group` = 1–2 (~1.5–3 min), o
 - precalcular las coordenadas que se vayan a mostrar.
 
 **Regresión:** el refactor (`Spec` en `pipeline/targets.py`) reproduce Barnard bit a bit (FITS, WebP y manifest).
-En eps Ind B difieren 2 píxeles de `S1_D5`, dentro del núcleo saturado rellenado: ese FITS publicado se generó justo antes del cambio de relleno por máximo, que entró a las 17:08. No se tocó, por instrucción explícita.
+En eps Ind B difieren 2 píxeles de `S1_D5`, dentro del núcleo saturado rellenado: ese FITS se había generado justo antes del cambio de relleno por máximo. **Se regeneró eps Ind B completo desde la caché:** los 44 WebP, `manifest.json` y `analysis.json` salen idénticos (solo cambia `generated_at`), y ahora sus FITS son consistentes con el código.
 
 ## Dónde está cada cosa
 
