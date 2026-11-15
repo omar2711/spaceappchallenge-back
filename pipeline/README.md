@@ -17,6 +17,97 @@ python -m venv .venv
 .venv/Scripts/python -m pipeline.export --target barnard                     # WebP + manifest en public-data/targets/
 ```
 
+## Coordenadas arbitrarias (para la API, B3): `pipeline/custom.py`
+
+El enunciado pide que el usuario ingrese RA/Dec y vea la serie de imágenes. `build_for_coords` produce **el mismo `manifest.json` + WebP** que los 5 objetivos (mismo schema y mismas convenciones), en `public-data/custom/<job_id>/`.
+
+```python
+from pipeline.custom import submit_custom, get_status, build_for_coords
+
+st = submit_custom(ra=67.9101, dec=18.2328, fov_arcmin=3, max_exposures_per_group=6)  # vuelve enseguida
+st = get_status(st["job_id"])                                                           # consultar cada ~2 s
+# cuando st["state"] == "ready": servir public-data/ + st["manifest"]  ("custom/<job_id>/manifest.json")
+```
+
+### `submit_custom(ra, dec, fov_arcmin=3, max_exposures_per_group=6)`
+
+- Lanza el trabajo en segundo plano y devuelve el estado inicial al instante.
+- **Validación:** `ra` en [0, 360), `dec` en [−90, 90], `fov_arcmin` en (0, 6] (por defecto 3) y `max_exposures_per_group` en [1, 30] (por defecto 6). Con otros valores lanza `ValueError`; la API debería responder 422.
+- **`job_id`:** es un hash de `(ra, dec, fov, max)` redondeados (0.36"). La misma consulta siempre da el mismo `job_id`:
+  - Si el resultado ya existe, devuelve `state: "ready"` sin recalcular (caché).
+  - Si ya está en cola o en proceso, devuelve el estado actual sin duplicar el trabajo.
+- **Un trabajo a la vez** por proceso, para cuidar la memoria y la carga de IRSA. Los demás esperan como `pending`.
+
+### `get_status(job_id)`
+
+Devuelve `None` si el `job_id` no existe. Si no, un dict persistido en `data/jobs/<job_id>.json`:
+
+```json
+{
+  "job_id": "c72b61a27340e", "state": "processing", "progress": 42.5, "stage": "download",
+  "message": "download 40/108", "manifest": null, "error": null,
+  "ra": 67.9101, "dec": 18.2328, "fov_arcmin": 3.0, "max_exposures_per_group": 6,
+  "created_at": "...", "updated_at": "..."
+}
+```
+
+**`state`:**
+
+| Valor | Significado |
+|---|---|
+| `pending` | En cola |
+| `processing` | En curso; `progress` va de 0 a 100 |
+| `ready` | Terminado; `manifest` tiene la ruta relativa a `public-data/` |
+| `error` | Falló; el motivo está en `error` |
+
+**`stage`, con su tramo de `progress`:**
+
+| Etapa | Progreso |
+|---|---|
+| `queued` | — |
+| `query` | 0–5 % |
+| `download` | 5–80 % |
+| `stack` | 80–97 % |
+| `export` | 97–100 % |
+| `done` | 100 % |
+
+**`error`:**
+
+| Valor | Significado |
+|---|---|
+| `no_coverage` | SPHEREx todavía no observó esa posición |
+| `interrupted` | El servidor se reinició a mitad del trabajo; hay que volver a llamar a `submit_custom` |
+| Nombre de la excepción | Cualquier otro fallo |
+
+### `build_for_coords(ra, dec, fov_arcmin=3, max_exposures_per_group=6, progress=None, keep_raw=False)`
+
+- Es la versión **bloqueante**: devuelve `{"job_id", "manifest", "cached", "epochs", "frames", ...}`.
+- Sirve para scripts y precálculo.
+- Si no hay imágenes de SPHEREx en esa posición, lanza `LookupError`.
+
+### Manifest de un campo libre
+
+Igual que el de los objetivos, con estas diferencias:
+- `kind: "custom"`, y `name` del tipo `"RA 67.9101, Dec +18.2328"`.
+- `proper_motion_mas_yr` vale 0.
+- `target_px` marca la posición pedida, que es el centro de la imagen.
+- `source.max_exposures_per_group` registra el límite usado.
+
+### Archivos y disco
+
+| Ruta | Contenido | ¿Se conserva? |
+|---|---|---|
+| `public-data/custom/<id>/` | WebP + manifest (~30 KB) | Sí: es lo que sirve la API |
+| `data/processed/custom/<id>/` | FITS sumados (~1 MB) | Sí, para análisis |
+| `data/raw/custom/<id>/` | Recortes de IRSA (~4 MB cada uno) | No: se borran al terminar, salvo con `keep_raw=True` |
+
+Para borrar un trabajo completo: `clear_custom(job_id)`.
+
+### Rendimiento
+
+- **Tiempo:** dominado por la descarga. Con la configuración por defecto son ~108 recortes, ~430 MB. La medición real está en `docs/pipeline_estado.md`.
+- **Memoria:** acotada. Se procesa grupo por grupo (pasada × detector), y solo un grupo de imágenes de 31×31 a 59×59 px está en memoria a la vez.
+
 ## Para B3 (API) y el frontend: `public-data/targets/`
 
 ```

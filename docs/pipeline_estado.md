@@ -1,4 +1,4 @@
-# Estado del pipeline SPHEREx (B1) — 2026-11-14, 18:00
+# Estado del pipeline SPHEREx (B1) — 2026-11-14, 20:15
 
 ## Resumen
 
@@ -13,11 +13,36 @@ El pipeline funciona de punta a punta. Baja recortes de SPHEREx desde IRSA, los 
 | RW Aurigae | 3 | 18 | 108 (6 por grupo) | Variable: D1 ×2.3, D5–D6 ÷2 entre S1 y S3. Saturada |
 | R Draconis | 3 | 18 | 108 (6 por grupo) | Mira: D1 cae ~2.2 mag en S2 y se recupera. Muy saturada |
 
+## Coordenadas arbitrarias (`pipeline/custom.py`)
+
+Cualquier RA/Dec genera el mismo `manifest.json` + WebP que los 5 objetivos, en `public-data/custom/<job_id>/`.
+- Para la API: `submit_custom(...)` y `get_status(job_id)`, que lanzan el trabajo en segundo plano y devuelven su estado.
+- Versión bloqueante: `build_for_coords(...)`.
+- El contrato está en `pipeline/README.md`.
+- **Límites:** campo de 3' por defecto (máximo 6'); 6 exposiciones por pasada × detector por defecto (máximo 30); un trabajo a la vez por proceso.
+- **Caché:** el `job_id` es un hash de `(ra, dec, fov, max)` redondeados, así que repetir una consulta no recalcula nada.
+
+**Mediciones** (conexión doméstica, 2026-11-14):
+
+| Prueba | Tiempo | Memoria pico | Resultado |
+|---|---|---|---|
+| HL Tau (67.9101, +18.2328), 3', 6/grupo, 108 recortes | **613 s** (consulta 17 s, **descarga 588 s**, suma y export ~8 s) | **138 MB** | 3 pasadas, 18 frames |
+| Trapecio de Orión (83.8221, −5.3911), 2', 1/grupo, 18 recortes, en segundo plano | 96 s | — | 3 pasadas, 18 frames |
+| Repetir HL Tau (caché) | 2.9 s (casi todo es importar librerías) | — | sin recálculo |
+
+**El cuello de botella es la descarga.** Cada recorte pesa ~4 MB por la tabla PSF (EPSF), aunque la imagen sea pequeña, e IRSA devuelve 503 bajo carga. Para respuestas rápidas en la demo:
+- usar `max_exposures_per_group` = 1–2 (~1.5–3 min), o
+- precalcular las coordenadas que se vayan a mostrar.
+
+**Regresión:** el refactor (`Spec` en `pipeline/targets.py`) reproduce Barnard bit a bit (FITS, WebP y manifest).
+En eps Ind B difieren 2 píxeles de `S1_D5`, dentro del núcleo saturado rellenado: ese FITS publicado se generó justo antes del cambio de relleno por máximo, que entró a las 17:08. No se tocó, por instrucción explícita.
+
 ## Dónde está cada cosa
 
 | Ruta | Qué es | ¿En git? |
 |---|---|---|
-| `pipeline/` | Código: `fetch`, `stack`, `export`, `build`, `report`, `deep`, `targets.yaml` | Sí |
+| `pipeline/` | Código: `fetch`, `stack`, `export`, `build`, `custom`, `report`, `deep`, `targets.yaml` | Sí |
+| `public-data/custom/<id>/` | Campos pedidos por coordenadas (los genera la API) | No por ahora: decidir si se versionan los de la demo |
 | `pipeline/README.md` | **Cómo consumir los datos (B2, B3, frontend)** | Sí |
 | `public-data/targets/` | `index.json` + `manifest.json` + WebP por objetivo (419 KB) | Sí |
 | `data/processed/<target>/` | FITS sumados para análisis (5.4 MB) | No: se regenera |
@@ -44,7 +69,8 @@ python -m venv .venv
 3. **Decisiones abiertas:**
    - Sub-pasadas de ~30 días para las variables (R Dra tiene pasadas de 67–88 días).
    - Campo de ~10' para eps Ind B, para incluir a la estrella primaria eps Ind A.
-4. **Fase 6:** `build_for_coords(ra, dec, fov)` para que B3 sirva coordenadas arbitrarias.
+4. ~~**Fase 6:** `build_for_coords`~~: hecho, ver la sección de coordenadas arbitrarias.
+5. **B3:** conectar `submit_custom` y `get_status` a endpoints FastAPI, por ejemplo `POST /custom` y `GET /custom/{job_id}`, y servir `public-data/` como estáticos.
 
 ## Advertencias
 

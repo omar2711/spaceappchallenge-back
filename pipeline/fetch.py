@@ -7,8 +7,6 @@ import logging
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from pathlib import Path
-
 import astropy.units as u
 import numpy as np
 import requests
@@ -17,12 +15,11 @@ from astropy.table import Table
 from astroquery.ipac.irsa import Irsa
 
 from pipeline.explore_barnard import group_epochs, retry
-from pipeline.targets import get_target, position_at
+from pipeline.targets import RAW_ROOT, target_spec  # noqa: F401  (RAW_ROOT re-exported)
 
 log = logging.getLogger("fetch")
 
 COLLECTIONS = ["spherex_dr1", "spherex_qr3"]
-RAW_ROOT = Path("data/raw")
 CUTOUT_MARGIN_ARCMIN = 1.0  # cutouts are fov + margin so reprojection has room
 
 
@@ -85,20 +82,31 @@ def plan_downloads(images, out, max_per_group=None):
 
 
 def fetch_target(target_id, workers=3, max_per_group=None):
-    center = position_at(target_id, "2026-01-01")
-    out = RAW_ROOT / target_id
+    return fetch_spec(target_spec(target_id), workers, max_per_group)
+
+
+def fetch_spec(spec, workers=3, max_per_group=None, progress=None):
+    """Query + download cutouts for a Spec. progress(stage, done, total) is called if given.
+    Raises LookupError if SPHEREx has no image covering the position."""
+    target_id = spec.id
+    center = spec.position_at("2026-01-01")
+    out = spec.raw_dir
     out.mkdir(parents=True, exist_ok=True)
+    if progress:
+        progress("query", 0, 1)
 
     index_path = out / "images.ecsv"
     if index_path.exists():
         images = Table.read(index_path)
     else:
         images = query_images(center)
+        if len(images) == 0:
+            raise LookupError(f"no SPHEREx images cover RA {center.ra.deg:.5f} Dec {center.dec.deg:.5f}")
         images.meta["center_ra"], images.meta["center_dec"] = center.ra.deg, center.dec.deg
         images.write(index_path, overwrite=True)
     log.info("%s: %d images in index", target_id, len(images))
 
-    size = (get_target(target_id)["fov_arcmin"] + CUTOUT_MARGIN_ARCMIN) / 60
+    size = (spec.fov_arcmin + CUTOUT_MARGIN_ARCMIN) / 60
     todo = plan_downloads(images, out, max_per_group)
     n_have = sum((out / r["file"]).exists() for r in images)
     log.info("%d already cached, %d to download (max per group: %s)", n_have, len(todo), max_per_group)
@@ -114,6 +122,8 @@ def fetch_target(target_id, workers=3, max_per_group=None):
                 log.warning("gave up on %s", futs[fut])
             if i % 10 == 0 or i == len(futs):
                 log.info("progress %d/%d (ok %d, failed %d)", i, len(futs), ok, fail)
+            if progress:
+                progress("download", i, len(futs))
     have = sum((out / r["file"]).exists() for r in images)
     log.info("%s: %d/%d cutouts cached", target_id, have, len(images))
     return images
