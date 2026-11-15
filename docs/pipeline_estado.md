@@ -81,6 +81,14 @@ python -m venv .venv
 4. ~~**Fase 6:** `build_for_coords`~~: hecho, ver la sección de coordenadas arbitrarias.
 5. ~~**B3:** endpoints FastAPI~~: hecho en `app/spherex.py` (`POST /custom`, `GET /custom/{job_id}`, `GET /spectrum`, `GET /fields` y `/data` como estáticos), con pruebas en `tests/test_api.py`. Ver el README raíz.
 
+## Decisiones tomadas
+
+- **2026-11-14: `feature/b2-science` (FlavioC30) no se integra a `main`.**
+  - Se deja en el remoto tal cual: sin mezclar y sin borrar.
+  - Contenido: módulo `app/b2/`, con su documentación y sus pruebas.
+  - Partió de `dd8af7c` y solo choca con `main` en `pyproject.toml`.
+  - El backend en `main` usa `pipeline/`, `analysis/` y `b3/`.
+
 ## Advertencias
 
 - **IRSA devuelve 503 bajo carga y cada recorte pesa ~4 MB** (por la tabla PSF). Hay que usar ≤ 4 hilos.

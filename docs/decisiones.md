@@ -14,6 +14,12 @@ Registro de acuerdos del equipo. Agrega las nuevas decisiones arriba.
 
 ## Decisiones
 
+### 2026-11-14 23:00 — No integrar `feature/b2-science`
+
+- **Contexto:** FlavioC30 subió `feature/b2-science` (módulo `app/b2/`) en paralelo al backend de `main`.
+- **Decisión:** no se integra a `main`. Queda en el remoto sin mezclar y sin borrar.
+- **Responsables:** Renny (B1/B2/B3 en `main`).
+
 ### 2026-11-14 — Tema, stack y reparto
 
 - **Contexto:** el repositorio se creó sin tema ni stack definidos.
