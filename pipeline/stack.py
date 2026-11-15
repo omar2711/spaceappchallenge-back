@@ -8,12 +8,11 @@ Outputs: data/processed/<target>/<epoch>_D<n>.fits
 import argparse
 import logging
 import warnings
+from dataclasses import replace
 from datetime import datetime, timezone
-from pathlib import Path
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.stats import sigma_clip, sigma_clipped_stats
 from astropy.table import Table
@@ -23,15 +22,14 @@ from astropy.wcs import WCS, FITSFixedWarning
 from reproject import reproject_interp
 from scipy.ndimage import maximum_filter
 
-from pipeline.fetch import RAW_ROOT
-from pipeline.targets import get_target, reference_coord
+from pipeline.fetch import RAW_ROOT  # noqa: F401  (re-exported for older imports)
+from pipeline.targets import PROCESSED_ROOT, target_spec  # noqa: F401  (PROCESSED_ROOT re-exported)
 
 log = logging.getLogger("stack")
 warnings.simplefilter("ignore", FITSFixedWarning)
 warnings.simplefilter("ignore", AstropyWarning)
 logging.getLogger("astropy").setLevel(logging.ERROR)  # silences the SIP/WAVE-TAB notice
 
-PROCESSED_ROOT = Path("data/processed")
 PIXEL_SCALE_ARCSEC = 6.15
 FOV_ARCMIN = 4.0
 CLIP_SIGMA = 5.0
@@ -157,96 +155,105 @@ def combine(images, variances):
 
 
 def stack_target(target_id, fov_arcmin=None):
-    raw = RAW_ROOT / target_id
+    spec = target_spec(target_id)
+    if fov_arcmin:
+        spec = replace(spec, fov_arcmin=fov_arcmin)
+    return stack_spec(spec)
+
+
+def stack_spec(spec, progress=None):
+    """Align and combine every cached cutout of a Spec per (epoch x detector). progress(stage, done, total)."""
+    target_id = spec.id
+    raw = spec.raw_dir
     images = Table.read(raw / "images.ecsv")
     # Grid epoch from the full index, so the grid does not move as more cutouts arrive.
     t_all = Time(np.asarray(images["t_min"], dtype=float), format="mjd")
     images = images[[(raw / f).exists() for f in images["file"]]]
     log.info("%s: %d cutouts available", target_id, len(images))
 
-    c_ref = reference_coord(target_id)
-    fov_arcmin = fov_arcmin or get_target(target_id)["fov_arcmin"]
     t_grid = Time(np.mean(t_all.mjd), format="mjd")
-    center = c_ref.apply_space_motion(new_obstime=t_grid)
-    grid, shape = make_grid(SkyCoord(center.ra, center.dec), fov_arcmin)
+    center = spec.position_at(t_grid)
+    grid, shape = make_grid(center, spec.fov_arcmin)
     log.info("grid %dx%d centred on RA %.6f Dec %.6f (target at %s)", shape[1], shape[0],
              center.ra.deg, center.dec.deg, t_grid.iso[:10])
 
-    out_dir = PROCESSED_ROOT / target_id
+    out_dir = spec.processed_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     written = []
-    for epoch in sorted(set(images["epoch"]), key=lambda s: int(s[1:])):
-        for det in range(1, 7):
-            sel = images[(images["epoch"] == epoch) & (images["detector"] == det)]
-            if len(sel) == 0:
+    groups = [(e, d) for e in sorted(set(images["epoch"]), key=lambda s: int(s[1:])) for d in range(1, 7)]
+    for gi, (epoch, det) in enumerate(groups, 1):
+        if progress:
+            progress("stack", gi - 1, len(groups))
+        sel = images[(images["epoch"] == epoch) & (images["detector"] == det)]
+        if len(sel) == 0:
+            continue
+        ims, vrs, holes, rows = [], [], [], []
+        for r in sel:
+            t_mid = Time((float(r["t_min"]) + float(r["t_max"])) / 2, format="mjd")
+            coord = spec.position_at(t_mid)
+            try:
+                sci, var, hole, wcs, meta = load_exposure(raw / r["file"], coord)
+            except Exception as exc:
+                log.warning("skipping %s: %s", r["file"], exc)
                 continue
-            ims, vrs, holes, rows = [], [], [], []
-            for r in sel:
-                t_mid = Time((float(r["t_min"]) + float(r["t_max"])) / 2, format="mjd")
-                coord = c_ref.apply_space_motion(new_obstime=t_mid)
-                try:
-                    sci, var, hole, wcs, meta = load_exposure(raw / r["file"], coord)
-                except Exception as exc:
-                    log.warning("skipping %s: %s", r["file"], exc)
-                    continue
-                im_r, fp = reproject_interp((sci, wcs), grid, shape_out=shape)
-                var_r, _ = reproject_interp((var, wcs), grid, shape_out=shape)
-                hole_r, _ = reproject_interp((hole, wcs), grid, shape_out=shape)
-                holes.append(np.nan_to_num(hole_r) > 0)
-                im_r[fp < 0.99] = np.nan
-                ims.append(im_r)
-                vrs.append(var_r)
-                tx, ty = grid.world_to_pixel(coord)
-                rows.append({"obs_id": str(r["obs_id"]), "collection": str(r["obs_collection"]),
-                             "mjd_mid": t_mid.mjd, "target_x": float(tx), "target_y": float(ty), **meta})
-            if not ims:
-                continue
-            mean, var, nimg, n_clipped = combine(ims, vrs)
-            exp = Table(rows)
-            mjd = np.asarray(exp["mjd_mid"])
-            t_mid_epoch = Time(np.mean(mjd), format="mjd")
-            tpos = c_ref.apply_space_motion(new_obstime=t_mid_epoch)
-            tx, ty = grid.world_to_pixel(tpos)
+            im_r, fp = reproject_interp((sci, wcs), grid, shape_out=shape)
+            var_r, _ = reproject_interp((var, wcs), grid, shape_out=shape)
+            hole_r, _ = reproject_interp((hole, wcs), grid, shape_out=shape)
+            holes.append(np.nan_to_num(hole_r) > 0)
+            im_r[fp < 0.99] = np.nan
+            ims.append(im_r)
+            vrs.append(var_r)
+            tx, ty = grid.world_to_pixel(coord)
+            rows.append({"obs_id": str(r["obs_id"]), "collection": str(r["obs_collection"]),
+                         "mjd_mid": t_mid.mjd, "target_x": float(tx), "target_y": float(ty), **meta})
+        if not ims:
+            continue
+        mean, var, nimg, n_clipped = combine(ims, vrs)
+        exp = Table(rows)
+        mjd = np.asarray(exp["mjd_mid"])
+        t_mid_epoch = Time(np.mean(mjd), format="mjd")
+        tpos = spec.position_at(t_mid_epoch)
+        tx, ty = grid.world_to_pixel(tpos)
 
-            hdr = grid.to_header()
-            hdr["BUNIT"] = "MJy/sr"
-            primary = fits.PrimaryHDU()
-            ph = primary.header
-            ph["TARGET"] = target_id
-            ph["EPOCH"] = epoch
-            ph["DETECTOR"] = det
-            ph["NIMAGES"] = (len(ims), "exposures combined")
-            ph["NCLIPPED"] = (n_clipped, "pixels rejected by sigma-clipping")
-            ph["DATE-BEG"] = Time(mjd.min(), format="mjd").isot
-            ph["DATE-END"] = Time(mjd.max(), format="mjd").isot
-            ph["DATE-MID"] = t_mid_epoch.isot
-            ph["WAVEMIN"] = (float(np.min(exp["wavelength_um"])), "um, at target, over exposures")
-            ph["WAVEMAX"] = (float(np.max(exp["wavelength_um"])), "um, at target, over exposures")
-            ph["TGT_X"] = (float(tx), "0-based pixel of target at DATE-MID")
-            ph["TGT_Y"] = (float(ty), "0-based pixel of target at DATE-MID")
-            ph["TGT_RA"] = tpos.ra.deg
-            ph["TGT_DEC"] = tpos.dec.deg
-            ph["NSATUR"] = (int(np.sum(exp["saturated"])), "exposures with saturation flags on target")
-            ph["CONTAM"] = (float(np.mean(exp["contam_fraction"])), "mean fraction of contamination-flagged px")
-            ph["BADFRAC"] = (float(np.mean(exp["bad_fraction"])), "mean fraction of rejected px")
-            ph["REJBITS"] = (",".join(map(str, REJECT_BITS)), "FLAGS bits masked")
-            ph["COMBINE"] = (f"weighted mean 1/var, {CLIP_SIGMA}-sigma clip (median, MAD)", "")
-            ph["BKGSUB"] = (BKGSUB_DESC, "per-exposure background removal")
-            ph["FILLNOTE"] = ("FILLED = n exposures with saturated px interpolated", "")
-            ph["CREATED"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
-            hdul = fits.HDUList([
-                primary,
-                fits.ImageHDU(mean.astype(np.float32), hdr, name="IMAGE"),
-                fits.ImageHDU(var.astype(np.float32), hdr, name="VARIANCE"),
-                fits.ImageHDU(nimg, hdr, name="NIMAGES"),
-                fits.ImageHDU(np.sum(holes, axis=0).astype(np.int16), hdr, name="FILLED"),
-                fits.BinTableHDU(exp, name="EXPOSURES"),
-            ])
-            path = out_dir / f"{epoch}_D{det}.fits"
-            hdul.writeto(path, overwrite=True)
-            written.append(path)
-            log.info("%s D%d: %d exposures, λ %.3f-%.3f um, saturated %d, clipped px %d -> %s",
-                     epoch, det, len(ims), ph["WAVEMIN"], ph["WAVEMAX"], ph["NSATUR"], n_clipped, path.name)
+        hdr = grid.to_header()
+        hdr["BUNIT"] = "MJy/sr"
+        primary = fits.PrimaryHDU()
+        ph = primary.header
+        ph["TARGET"] = target_id
+        ph["EPOCH"] = epoch
+        ph["DETECTOR"] = det
+        ph["NIMAGES"] = (len(ims), "exposures combined")
+        ph["NCLIPPED"] = (n_clipped, "pixels rejected by sigma-clipping")
+        ph["DATE-BEG"] = Time(mjd.min(), format="mjd").isot
+        ph["DATE-END"] = Time(mjd.max(), format="mjd").isot
+        ph["DATE-MID"] = t_mid_epoch.isot
+        ph["WAVEMIN"] = (float(np.min(exp["wavelength_um"])), "um, at target, over exposures")
+        ph["WAVEMAX"] = (float(np.max(exp["wavelength_um"])), "um, at target, over exposures")
+        ph["TGT_X"] = (float(tx), "0-based pixel of target at DATE-MID")
+        ph["TGT_Y"] = (float(ty), "0-based pixel of target at DATE-MID")
+        ph["TGT_RA"] = tpos.ra.deg
+        ph["TGT_DEC"] = tpos.dec.deg
+        ph["NSATUR"] = (int(np.sum(exp["saturated"])), "exposures with saturation flags on target")
+        ph["CONTAM"] = (float(np.mean(exp["contam_fraction"])), "mean fraction of contamination-flagged px")
+        ph["BADFRAC"] = (float(np.mean(exp["bad_fraction"])), "mean fraction of rejected px")
+        ph["REJBITS"] = (",".join(map(str, REJECT_BITS)), "FLAGS bits masked")
+        ph["COMBINE"] = (f"weighted mean 1/var, {CLIP_SIGMA}-sigma clip (median, MAD)", "")
+        ph["BKGSUB"] = (BKGSUB_DESC, "per-exposure background removal")
+        ph["FILLNOTE"] = ("FILLED = n exposures with saturated px interpolated", "")
+        ph["CREATED"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        hdul = fits.HDUList([
+            primary,
+            fits.ImageHDU(mean.astype(np.float32), hdr, name="IMAGE"),
+            fits.ImageHDU(var.astype(np.float32), hdr, name="VARIANCE"),
+            fits.ImageHDU(nimg, hdr, name="NIMAGES"),
+            fits.ImageHDU(np.sum(holes, axis=0).astype(np.int16), hdr, name="FILLED"),
+            fits.BinTableHDU(exp, name="EXPOSURES"),
+        ])
+        path = out_dir / f"{epoch}_D{det}.fits"
+        hdul.writeto(path, overwrite=True)
+        written.append(path)
+        log.info("%s D%d: %d exposures, λ %.3f-%.3f um, saturated %d, clipped px %d -> %s",
+                 epoch, det, len(ims), ph["WAVEMIN"], ph["WAVEMAX"], ph["NSATUR"], n_clipped, path.name)
     return written
 
 

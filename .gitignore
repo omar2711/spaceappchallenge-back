@@ -32,3 +32,6 @@ Desktop.ini
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# Fields generated on demand by the API (pipeline/custom.py)
+public-data/custom/

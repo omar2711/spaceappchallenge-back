@@ -22,13 +22,13 @@ from astropy.time import Time
 from astropy.visualization import AsinhStretch
 from PIL import Image
 
-from pipeline.fetch import COLLECTIONS, RAW_ROOT
-from pipeline.stack import PIXEL_SCALE_ARCSEC, PROCESSED_ROOT
-from pipeline.targets import get_target
+from pipeline.fetch import COLLECTIONS
+from pipeline.stack import PIXEL_SCALE_ARCSEC
+from pipeline.targets import target_spec
 
 log = logging.getLogger("export")
 
-PUBLIC_ROOT = Path("public-data/targets")
+PUBLIC_ROOT = Path("public-data/targets")  # named targets; custom fields go to public-data/custom/<id>
 SCHEMA_PATH = Path(__file__).with_name("manifest.schema.json")
 STRETCH_A = 0.002         # asinh softening: lower = more contrast in faint parts
 PERCENTILES = (2.0, 99.5)  # computed jointly over all epochs of a detector; top 0.5% (bright cores) saturate
@@ -61,8 +61,16 @@ def to_frame(img, lo, hi):
 
 
 def export_target(target_id):
-    src = PROCESSED_ROOT / target_id
-    out = PUBLIC_ROOT / target_id
+    manifest = export_spec(target_spec(target_id))
+    write_index()
+    return manifest
+
+
+def export_spec(spec):
+    """WebP frames + manifest.json for a Spec, from its stacks in spec.processed_dir."""
+    target_id = spec.id
+    src = spec.processed_dir
+    out = spec.public_dir
     out.mkdir(parents=True, exist_ok=True)
 
     stacks = {}
@@ -74,7 +82,7 @@ def export_target(target_id):
                 "wcs_header": hdul["IMAGE"].header.copy(),
             }
     if not stacks:
-        raise SystemExit(f"no stacks in {src}; run pipeline.stack first")
+        raise RuntimeError(f"no stacks in {src}; run pipeline.stack first")
     epochs = sorted({e for e, _ in stacks}, key=epoch_key)
     detectors = sorted({d for _, d in stacks})
     any_stack = next(iter(stacks.values()))
@@ -117,18 +125,17 @@ def export_target(target_id):
         mid = Time((beg.mjd + end.mjd) / 2, format="mjd")
         epoch_entries.append({"id": e, "date_start": beg.isot[:19], "date_end": end.isot[:19], "date_mid": mid.isot[:19]})
 
-    info = get_target(target_id)
-    a = info["astrometry"]
+    a = spec.astrometry
     wh = any_stack["wcs_header"]
     grid_wcs = {k: wh[k] for k in ["CTYPE1", "CTYPE2", "CRVAL1", "CRVAL2", "CRPIX1", "CRPIX2",
                                     "CDELT1", "CDELT2", "CUNIT1", "CUNIT2"] if k in wh}
     grid_wcs.update({"NAXIS1": nx, "NAXIS2": ny})
-    n_images = len(Table.read(RAW_ROOT / target_id / "images.ecsv"))
+    n_images = len(Table.read(spec.raw_dir / "images.ecsv"))
 
     manifest = {
         "target_id": target_id,
-        "name": info["name"],
-        "kind": info["kind"],
+        "name": spec.name,
+        "kind": spec.kind,
         "ref_coord": {"ra_deg": round(float(a["ra"]), 7), "dec_deg": round(float(a["dec"]), 7),
                       "epoch": f"J{float(a['epoch']):.1f}", "source": a["source"]},
         "proper_motion_mas_yr": {"pmra": round(float(a["pmra"]), 3), "pmdec": round(float(a["pmdec"]), 3)},
@@ -143,22 +150,23 @@ def export_target(target_id):
                     "units": "MJy/sr"},
         "source": {"collections": COLLECTIONS, "n_images_available": n_images,
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")},
-        "notes": NOTES + (" " + info["notes"] if info.get("notes") else ""),
+        "notes": NOTES + (" " + spec.notes if spec.notes else ""),
     }
-    validate_manifest(manifest)
+    if spec.max_per_group:
+        manifest["source"]["max_exposures_per_group"] = spec.max_per_group
+    validate_manifest(manifest, out)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     log.info("%s: %d frames, manifest -> %s", target_id, sum(len(d["frames"]) for d in det_entries), out / "manifest.json")
-    write_index()
     return manifest
 
 
-def validate_manifest(manifest):
+def validate_manifest(manifest, out_dir=None):
     import jsonschema
     schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     jsonschema.validate(manifest, schema)
     for d in manifest["detectors"]:
         for f in d["frames"]:
-            assert (PUBLIC_ROOT / manifest["target_id"] / f["file"]).exists(), f["file"]
+            assert ((out_dir or PUBLIC_ROOT / manifest["target_id"]) / f["file"]).exists(), f["file"]
 
 
 def write_index():
