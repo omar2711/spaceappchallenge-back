@@ -79,7 +79,7 @@ python -m venv .venv
    - Sub-pasadas de ~30 días para las variables (R Dra tiene pasadas de 67–88 días).
    - Campo de ~10' para eps Ind B, para incluir a la estrella primaria eps Ind A.
 4. ~~**Fase 6:** `build_for_coords`~~: hecho, ver la sección de coordenadas arbitrarias.
-5. **B3:** conectar `submit_custom` y `get_status` a endpoints FastAPI, por ejemplo `POST /custom` y `GET /custom/{job_id}`, y servir `public-data/` como estáticos.
+5. ~~**B3:** conectar `submit_custom` y `get_status` a endpoints FastAPI, y servir `public-data/` como estáticos.~~ **Hecho:** endpoints versionados en `/api/v1/custom`, `/api/v1/targets`, `/api/v1/visibility`, `/api/v1/moon`, `/api/v1/mars`, `/api/v1/ice` y `/api/v1/comets`; contrato resumido en [docs/api.md](api.md).
 
 ## Advertencias
 
