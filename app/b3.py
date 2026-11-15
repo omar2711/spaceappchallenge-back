@@ -1,7 +1,7 @@
 """Endpoints B3: Luna, Gaia, Cochabamba y Marte. Todo funciona sin internet (datos y efemérides locales)."""
 from fastapi import APIRouter, HTTPException, Query
 
-from b3 import moon
+from b3 import gaia, moon
 from b3.ephemeris import EphemerisMissing
 
 router = APIRouter()
@@ -27,3 +27,13 @@ def moon_visibility(site: str = Query(..., description="id de /moon/sites, p. ej
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.get("/gaia", tags=["gaia"], summary="Estrellas Gaia DR3 del campo, propagadas a cada pasada (flechas)")
+def gaia_field(field: str = Query(..., description="barnard, eps_ind_b, r_dra, rw_aur, wise0855, hl_tau, trapezium, m42")) -> dict:
+    """`sources[].epochs[<pasada>].px` = posición en píxeles WebP de ese campo en la fecha media de la pasada
+    (dibujar flechas entre pasadas cuando `arrow` es true)."""
+    try:
+        return gaia.load_field(field)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc

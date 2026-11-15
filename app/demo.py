@@ -29,6 +29,8 @@ DEMO_CHECKS = [
     ("GET", "/spectrum", {"field": "m42", "ra": 83.8088, "dec": -5.37298}),
     ("GET", "/spectrum", {"field": "eps_ind_b", "ra": 331.12786, "dec": -56.77502}),
     ("GET", "/moon/sites", None),
+    ("GET", "/gaia", {"field": "barnard"}),
+    ("GET", "/gaia", {"field": "m42"}),
     ("GET", "/moon/visibility", {"site": "haworth", "start": "2026-12-01", "days": 30, "step_min": 10}),
 ]
 

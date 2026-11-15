@@ -56,7 +56,7 @@ Response `202`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:45:11+00:00",
+  "updated_at": "2026-11-15T02:45:47+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -86,7 +86,7 @@ Response `200`:
   "dec": -5.3876,
   "fov_arcmin": 4.0,
   "max_exposures_per_group": 2,
-  "updated_at": "2026-11-15T02:45:11+00:00",
+  "updated_at": "2026-11-15T02:45:47+00:00",
   "manifest_url": "/data/custom/c2d9e7410cce7/manifest.json"
 }
 ```
@@ -244,7 +244,7 @@ Response `200`:
     "... (+8 más)"
   ],
   "notes": "Forced aperture photometry (r = 12\") on cached exposures of the field at a fixed sky position (no proper motion). One point per exposure; saturated points ar...",
-  "elapsed_s": 0.14
+  "elapsed_s": 0.12
 }
 ```
 
@@ -416,6 +416,128 @@ Response `200`:
     "earth_visible_definition": "any part of the Earth above the horizon",
     "validation": "Matches JPL Horizons topocentric elevation/azimuth to < 0.001 deg (Apollo 11 site)"
   }
+}
+```
+
+### Estrellas Gaia DR3 del campo: `GET /gaia`
+
+Para los 5 objetivos y los 3 presets: fuentes Gaia DR3 (G < 20) del campo con `pmra`, `pmdec`, `g_mag` y la posición propagada a la fecha media de cada pasada en `epochs[<id>]` (`ra`, `dec` y `px` en coordenadas WebP del campo). Dibujar flechas entre pasadas donde `arrow` es true (movimiento propio ≥ 20 mas/año). Fuente ordenada por brillo. 404 si el campo no existe.
+
+Request:
+
+```http
+GET /gaia?field=barnard
+```
+
+Response `200`:
+
+```json
+{
+  "field": "barnard",
+  "catalog": "Gaia DR3 (ESA/Gaia/DPAC), gaiadr3.gaia_source",
+  "g_limit": 20.0,
+  "center": {
+    "ra": 269.44622827173,
+    "dec": 4.7687196632577
+  },
+  "radius_deg": 0.04998,
+  "image_size_px": [
+    39,
+    39
+  ],
+  "epochs": [
+    {
+      "id": "S1",
+      "date_mid": "2025-09-08T01:35:00"
+    },
+    {
+      "id": "S2",
+      "date_mid": "2026-04-07T14:06:30"
+    },
+    "... (+1 más)"
+  ],
+  "notes": "Positions propagated from ref_epoch (2016.0) with proper motion only (no parallax/radial velocity). px = WebP pixel coordinates of this field's frames (origi...",
+  "n_sources": 391,
+  "sources": [
+    {
+      "source_id": "4472832130942575872",
+      "ra": 269.4485025,
+      "dec": 4.7394201,
+      "ref_epoch": 2016.0,
+      "pmra": -801.551,
+      "pmdec": 10362.394,
+      "parallax": 546.976,
+      "g_mag": 8.194,
+      "pm_total_mas_yr": 10393.35,
+      "arrow": true,
+      "epochs": {
+        "S1": {
+          "ra": 269.4463386,
+          "dec": 4.7672987,
+          "px": [
+            18.936,
+            19.832
+          ]
+        },
+        "S2": {
+          "ra": 269.4462092,
+          "dec": 4.7689657,
+          "px": [
+            19.011,
+            18.856
+          ]
+        },
+        "S3": {
+          "ra": 269.4461177,
+          "dec": 4.7701442,
+          "px": [
+            19.065,
+            18.166
+          ]
+        }
+      }
+    },
+    {
+      "source_id": "4472836292758713216",
+      "ra": 269.4438716,
+      "dec": 4.7962914,
+      "ref_epoch": 2016.0,
+      "pmra": -6.159,
+      "pmdec": 0.513,
+      "parallax": 0.977,
+      "g_mag": 11.863,
+      "pm_total_mas_yr": 6.18,
+      "arrow": false,
+      "epochs": {
+        "S1": {
+          "ra": 269.443855,
+          "dec": 4.7962928,
+          "px": [
+            20.384,
+            2.86
+          ]
+        },
+        "S2": {
+          "ra": 269.443854,
+          "dec": 4.7962929,
+          "px": [
+            20.385,
+            2.86
+          ]
+        },
+        "S3": {
+          "ra": 269.4438533,
+          "dec": 4.7962929,
+          "px": [
+            20.385,
+            2.86
+          ]
+        }
+      }
+    },
+    "... (+389 más)"
+  ],
+  "generated_at": "2026-11-15T02:40:06+00:00"
 }
 ```
 

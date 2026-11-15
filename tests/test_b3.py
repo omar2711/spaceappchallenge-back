@@ -37,3 +37,14 @@ def test_moon_errors():
     assert client.get("/moon/visibility", params={"site": "nope", "start": "2026-12-01"}).status_code == 404
     assert client.get("/moon/visibility", params={"site": "apollo11", "start": "2026-12-01", "days": 31}).status_code == 422
     assert client.get("/moon/visibility", params={"site": "apollo11", "start": "ayer"}).status_code == 422
+
+
+def test_gaia_fields_and_barnard_motion():
+    for f in ["barnard", "eps_ind_b", "r_dra", "rw_aur", "wise0855", "hl_tau", "trapezium", "m42"]:
+        assert client.get("/gaia", params={"field": f}).status_code == 200
+    body = client.get("/gaia", params={"field": "barnard"}).json()
+    b = next(s for s in body["sources"] if s["source_id"] == "4472832130942575872")
+    assert b["arrow"] and b["pm_total_mas_yr"] > 10000
+    ys = [b["epochs"][e]["px"][1] for e in ("S1", "S2", "S3")]
+    assert ys[0] > ys[1] > ys[2]  # moving north = up in WebP coordinates
+    assert client.get("/gaia", params={"field": "nope"}).status_code == 404

@@ -57,6 +57,14 @@ ENDPOINTS += [
      "Horizons (< 0.001°). Errores: 404 sitio, 422 parámetros."),
 ]
 
+ENDPOINTS += [
+    ("GET", "/gaia", {"field": "barnard"}, "Estrellas Gaia DR3 del campo",
+     "Para los 5 objetivos y los 3 presets: fuentes Gaia DR3 (G < 20) del campo con `pmra`, `pmdec`, `g_mag` y la "
+     "posición propagada a la fecha media de cada pasada en `epochs[<id>]` (`ra`, `dec` y `px` en coordenadas WebP "
+     "del campo). Dibujar flechas entre pasadas donde `arrow` es true (movimiento propio ≥ 20 mas/año). Fuente "
+     "ordenada por brillo. 404 si el campo no existe."),
+]
+
 # (url path, title, description)
 STATIC = [
     ("/data/targets/index.json", "Índice de los 5 objetivos", "Lista de objetivos con su `manifest`."),
